@@ -1,0 +1,504 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>大模型下的深度强化学习的多智能体渗透测试(11) | 欢迎来到和泉伏见的网络世界！</title><meta name="author" content="izumifushimi"><meta name="copyright" content="izumifushimi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="PenGym 单智能体 izumi 当日进展报告：success distillation 压出 tiny-small deterministic 成功策略，并迁移到 tiny-hard BC solved 基线一、这篇文章要说明什么上一篇记录结束时，项目已经推进到一个新的关键位置：  当前主线已经固定为 646&#x2F;192，即 obs_dim&#x3D;646、action_dim&#x3D;192； unified">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大模型下的深度强化学习的多智能体渗透测试(11)">
+<meta property="og:url" content="https://izumifushimi.github.io/2026/05/08/11/index.html">
+<meta property="og:site_name" content="欢迎来到和泉伏见的网络世界！">
+<meta property="og:description" content="PenGym 单智能体 izumi 当日进展报告：success distillation 压出 tiny-small deterministic 成功策略，并迁移到 tiny-hard BC solved 基线一、这篇文章要说明什么上一篇记录结束时，项目已经推进到一个新的关键位置：  当前主线已经固定为 646&#x2F;192，即 obs_dim&#x3D;646、action_dim&#x3D;192； unified">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izumifushimi.github.io/img/zhezhi.jpg">
+<meta property="article:published_time" content="2026-05-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-05-08T12:25:30.000Z">
+<meta property="article:author" content="izumifushimi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://izumifushimi.github.io/img/zhezhi.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "大模型下的深度强化学习的多智能体渗透测试(11)",
+  "url": "https://izumifushimi.github.io/2026/05/08/11/",
+  "image": "https://izumifushimi.github.io/img/zhezhi.jpg",
+  "datePublished": "2026-05-07T16:00:00.000Z",
+  "dateModified": "2026-05-08T12:25:30.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "izumifushimi",
+      "url": "https://izumifushimi.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://izumifushimi.github.io/2026/05/08/11/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '大模型下的深度强化学习的多智能体渗透测试(11)',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><style>#nav { z-index: 99 !important; background: transparent !important; } #nav .site-page { color: #333 !important; font-weight: bold !important; text-shadow: 1px 1px 2px #fff !important; } #menus { display: block !important; }</style><video id="background-video" autoplay loop muted playsinline style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-2;"><source src="/img/hui.mp4" type="video/mp4"></video><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">欢迎来到和泉伏见的网络世界！</span></a><a class="nav-page-title" href="/"><span class="site-name">大模型下的深度强化学习的多智能体渗透测试(11)</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">大模型下的深度强化学习的多智能体渗透测试(11)</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-05-07T16:00:00.000Z" title="发表于 2026-05-08 00:00:00">2026-05-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-05-08T12:25:30.000Z" title="更新于 2026-05-08 20:25:30">2026-05-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%A7%91%E7%A0%94/">科研</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h1 id="PenGym-单智能体-izumi-当日进展报告：success-distillation-压出-tiny-small-deterministic-成功策略，并迁移到-tiny-hard-BC-solved-基线"><a href="#PenGym-单智能体-izumi-当日进展报告：success-distillation-压出-tiny-small-deterministic-成功策略，并迁移到-tiny-hard-BC-solved-基线" class="headerlink" title="PenGym 单智能体 izumi 当日进展报告：success distillation 压出 tiny-small deterministic 成功策略，并迁移到 tiny-hard BC solved 基线"></a>PenGym 单智能体 <code>izumi</code> 当日进展报告：success distillation 压出 <code>tiny-small</code> deterministic 成功策略，并迁移到 <code>tiny-hard</code> BC solved 基线</h1><h2 id="一、这篇文章要说明什么"><a href="#一、这篇文章要说明什么" class="headerlink" title="一、这篇文章要说明什么"></a>一、这篇文章要说明什么</h2><p>上一篇记录结束时，项目已经推进到一个新的关键位置：</p>
+<ul>
+<li>当前主线已经固定为 <code>646/192</code>，即 <code>obs_dim=646</code>、<code>action_dim=192</code>；</li>
+<li>unified demo dataset 与 BC 训练链路已经打通；</li>
+<li>BC 到 MaskablePPO 的 warm-start 工程链路已经打通；</li>
+<li><code>tiny-small</code> 的问题已经从“接口不通 &#x2F; 数据不足”推进到更具体的策略提取问题；</li>
+<li>修复 repeat guard 后，stochastic policy 已经能偶尔成功，但 deterministic argmax 仍然不稳定；</li>
+<li>继续普通 PPO 训练、继续简单 root bonus、继续无控制采样都没有形成稳定 deterministic 成功策略。</li>
+</ul>
+<p>本阶段的核心目标不再是继续盲目堆训练步数，而是做一件更聚焦的事：</p>
+<blockquote>
+<p>把 stochastic 已经走出来的成功轨迹蒸馏回 BC，使 deterministic policy 稳定复现成功路径。</p>
+</blockquote>
+<p>今天的真实结果可以概括为八点：</p>
+<ol>
+<li>已完成 <code>tiny-small</code> 的 low-cost stochastic success trace collection，收集到 2 条真实成功轨迹。</li>
+<li>已将 stochastic success traces 合并进 multidemo dataset，形成 successdistill dataset。</li>
+<li>已训练出 <code>tiny-small</code> successdistill BC checkpoint，并在 deterministic eval 下达到 <code>10/10</code> 成功。</li>
+<li>已确认普通 PPO warm-start 会破坏 BC actor，使策略从 <code>10/10</code> 退化到 <code>0/10</code>。</li>
+<li>已新增 actor-freeze &#x2F; value-only PPO 路线，并解决 SB3 optimizer state 参数组不一致的加载问题。</li>
+<li>已验证 actor-freeze PPO 在 <code>tiny-small</code> 上 deterministic 达到 <code>10/10</code>，并把平均步数从 BC 的 16 步进一步压到 12 步。</li>
+<li>已将同一套 unified demo + BC 路线迁移到 <code>tiny-hard</code>，构造出第一个 tiny-hard unified dataset。</li>
+<li>已训练并验证 <code>tiny-hard</code> BC deterministic 达到 <code>10/10</code>，说明 <code>tiny-hard</code> 也已获得可复现的 BC solved baseline。</li>
+</ol>
+<p>因此，本阶段的最重要结论是：</p>
+<blockquote>
+<p><code>tiny-small</code> 已经不再只是 stochastic 偶发成功，而是通过 success distillation 压成了 deterministic 成功策略；并且 actor-freeze PPO 可以在不破坏 BC actor 的前提下保留甚至优化这条策略。与此同时，<code>tiny-hard</code> 也已经通过最小 expert demo + BC 训练达到 deterministic <code>10/10</code> 成功。</p>
+</blockquote>
+<hr>
+<h2 id="二、为什么不继续普通-PPO，而是转向-success-distillation"><a href="#二、为什么不继续普通-PPO，而是转向-success-distillation" class="headerlink" title="二、为什么不继续普通 PPO，而是转向 success distillation"></a>二、为什么不继续普通 PPO，而是转向 success distillation</h2><p>在本阶段开始时，<code>tiny-small</code> 的核心现象已经很明确：</p>
+<ul>
+<li>guard bug 修复后，<code>e_http@(3,1)</code> 已经可以执行；</li>
+<li>50k 与 100k 训练都能看到 stochastic 成功；</li>
+<li>但 deterministic argmax 长期无法稳定选择正确动作；</li>
+<li>特别是在 <code>(4,0)</code> 附近，策略会在 <code>e_ssh</code> 与 <code>e_ftp</code> 之间产生错误偏好。</li>
+</ul>
+<p>100k 的 logit 诊断进一步说明：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">50k:  e_ftp - e_ssh = -1.78</span><br><span class="line">100k: e_ftp - e_ssh = -2.10</span><br></pre></td></tr></table></figure>
+
+<p>也就是说，继续训练不但没有把 <code>e_ftp@(4,0)</code> 拉成 argmax，反而让 <code>e_ssh</code> 的优势更强。</p>
+<p>随后尝试了 root transition bonus，希望通过更强的 ROOT 奖励把 <code>e_ftp@(4,0)</code> 拉起来。但 rootbonus_20k 训练中出现了一个关键现象：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ROOT_BONUS never fired</span><br></pre></td></tr></table></figure>
+
+<p>这说明奖励虽然实现了，但策略在训练过程中并没有稳定走到能触发该奖励的位置。因此继续调 root bonus 并不是低成本优先解。</p>
+<p>于是本阶段转向了更直接的办法：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">stochastic success rollout</span><br><span class="line">-&gt; 保存成功轨迹</span><br><span class="line">-&gt; 合并进 unified dataset</span><br><span class="line">-&gt; 重新 BC</span><br><span class="line">-&gt; deterministic eval</span><br></pre></td></tr></table></figure>
+
+<p>这条路线的核心判断是：</p>
+<blockquote>
+<p>既然 stochastic policy 已经能走出成功路径，就不要继续让 PPO 随机漂移，而是直接把成功轨迹蒸馏成监督数据，强行让 deterministic policy 学会这些状态下的正确动作。</p>
+</blockquote>
+<hr>
+<h2 id="三、低成本收集-tiny-small-stochastic-成功轨迹"><a href="#三、低成本收集-tiny-small-stochastic-成功轨迹" class="headerlink" title="三、低成本收集 tiny-small stochastic 成功轨迹"></a>三、低成本收集 <code>tiny-small</code> stochastic 成功轨迹</h2><p>为了避免此前 Claude 长时间后台采集导致成本失控，本阶段把采集目标改成低成本版本：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">target_successes = 2</span><br><span class="line">max_episodes     = 20</span><br><span class="line">max_steps        = 80</span><br><span class="line">timeout          = 5m</span><br><span class="line">save_partial     = true</span><br></pre></td></tr></table></figure>
+
+<p>最终使用模型：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/maskable_ppo_tiny_small_bc_multidemo_guardfix_rootbonus_20k.zip</span><br></pre></td></tr></table></figure>
+
+<p>收集结果为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">n_episodes_run = 9</span><br><span class="line">n_success      = 2</span><br><span class="line">success_rate   = 2/9 = 22.2%</span><br><span class="line">total_samples  = 36</span><br><span class="line">obs_dim        = 646</span><br><span class="line">action_dim     = 192</span><br></pre></td></tr></table></figure>
+
+<p>输出数据集：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/tiny_small_stochastic_success_traces.npz</span><br><span class="line">prototype/models/tiny_small_stochastic_success_traces_meta.json</span><br></pre></td></tr></table></figure>
+
+<p>两条成功轨迹都包含关键动作：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">e_ftp@(4,0)</span><br></pre></td></tr></table></figure>
+
+<p>其中一条典型成功轨迹为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">service_scan@(1,0)</span><br><span class="line">os_scan@(1,0)</span><br><span class="line">e_http@(1,0)</span><br><span class="line">pe_tomcat@(1,0)</span><br><span class="line">subnet_scan@(1,0)</span><br><span class="line">os_scan@(3,1)</span><br><span class="line">e_ssh@(2,0)</span><br><span class="line">pe_tomcat@(2,0)</span><br><span class="line">service_scan@(3,1)</span><br><span class="line">service_scan@(2,0)</span><br><span class="line">os_scan@(2,0)</span><br><span class="line">e_http@(3,1)</span><br><span class="line">subnet_scan@(3,1)</span><br><span class="line">service_scan@(3,1)</span><br><span class="line">service_scan@(4,0)</span><br><span class="line">os_scan@(4,0)</span><br><span class="line">e_ftp@(4,0)</span><br></pre></td></tr></table></figure>
+
+<p>这一步非常关键，因为它证明：</p>
+<blockquote>
+<p>成功路径不是人工幻想出来的，而是当前 policy 在真实 stochastic rollout 中实际走出来的成功 episode。</p>
+</blockquote>
+<hr>
+<h2 id="四、合并-successdistill-dataset-并训练-tiny-small-BC"><a href="#四、合并-successdistill-dataset-并训练-tiny-small-BC" class="headerlink" title="四、合并 successdistill dataset 并训练 tiny-small BC"></a>四、合并 successdistill dataset 并训练 <code>tiny-small</code> BC</h2><p>随后将原有 multidemo dataset 与 stochastic success traces 合并。</p>
+<p>原始 multidemo dataset：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/demo_tiny_small_unified_multidemo_dataset.npz</span><br><span class="line">samples  = 77</span><br><span class="line">episodes = 4</span><br></pre></td></tr></table></figure>
+
+<p>新增 stochastic success traces：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/tiny_small_stochastic_success_traces.npz</span><br><span class="line">samples  = 36</span><br><span class="line">episodes = 2</span><br></pre></td></tr></table></figure>
+
+<p>合并后 successdistill dataset：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/demo_tiny_small_unified_successdistill_dataset.npz</span><br><span class="line">samples  = 113</span><br><span class="line">episodes = 6</span><br><span class="line">obs_dim  = 646</span><br><span class="line">action_dim = 192</span><br></pre></td></tr></table></figure>
+
+<p>随后训练 successdistill BC：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/bc_unified_tiny_small_successdistill_300e.pt</span><br></pre></td></tr></table></figure>
+
+<p>训练结果：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">obs shape    = (113, 646)</span><br><span class="line">actions shape = (113,)</span><br><span class="line">obs_dim      = 646</span><br><span class="line">action_dim   = 192</span><br><span class="line">final loss   = 0.641556</span><br><span class="line">final acc    = 0.6903</span><br></pre></td></tr></table></figure>
+
+<p>这里 <code>acc</code> 没有达到 <code>1.0</code>，但这不是坏事。原因是 successdistill dataset 中包含多条不同轨迹和不同状态分支，不再是单轨迹重复记忆。</p>
+<p>真正关键的是 deterministic rollout 结果。</p>
+<hr>
+<h2 id="五、tiny-small-successdistill-BC-达到-deterministic-10-10"><a href="#五、tiny-small-successdistill-BC-达到-deterministic-10-10" class="headerlink" title="五、tiny-small successdistill BC 达到 deterministic 10/10"></a>五、<code>tiny-small</code> successdistill BC 达到 deterministic <code>10/10</code></h2><p>使用 <code>eval_bc_unified.py</code> 对 successdistill BC checkpoint 做 deterministic eval，结果为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Aggregate:</span><br><span class="line">  episodes          : 10</span><br><span class="line">  success_rate      : 10/10 = 100.0%</span><br><span class="line">  avg_reward        : +180.000</span><br><span class="line">  avg_steps         : 16.0</span><br><span class="line">  reached_(4,0)     : 10/10</span><br><span class="line">  chose_e_ftp@(4,0) : 10/10</span><br></pre></td></tr></table></figure>
+
+<p>稳定复现的 16 步成功路径为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">service_scan@(1,0)</span><br><span class="line">os_scan@(1,0)</span><br><span class="line">e_http@(1,0)</span><br><span class="line">pe_tomcat@(1,0)</span><br><span class="line">subnet_scan@(1,0)</span><br><span class="line">service_scan@(2,0)</span><br><span class="line">e_ssh@(2,0)</span><br><span class="line">pe_tomcat@(2,0)</span><br><span class="line">subnet_scan@(2,0)</span><br><span class="line">service_scan@(3,1)</span><br><span class="line">e_ftp@(3,1)</span><br><span class="line">e_http@(3,1)</span><br><span class="line">subnet_scan@(3,1)</span><br><span class="line">service_scan@(4,0)</span><br><span class="line">os_scan@(4,0)</span><br><span class="line">e_ftp@(4,0)</span><br></pre></td></tr></table></figure>
+
+<p>这一步是本阶段第一个真正的成功里程碑：</p>
+<blockquote>
+<p><code>tiny-small</code> 已经可以被 successdistill BC deterministic 稳定解决。</p>
+</blockquote>
+<p>对应 checkpoint：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/bc_unified_tiny_small_successdistill_300e.pt</span><br></pre></td></tr></table></figure>
+
+<p>建议固化副本：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/bc_unified_tiny_small_successdistill_SOLVED_10of10.pt</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、普通-PPO-warm-start-会破坏-BC-actor"><a href="#六、普通-PPO-warm-start-会破坏-BC-actor" class="headerlink" title="六、普通 PPO warm-start 会破坏 BC actor"></a>六、普通 PPO warm-start 会破坏 BC actor</h2><p>在 BC deterministic <code>10/10</code> 后，尝试将该 BC checkpoint 接回普通 MaskablePPO warm-start。</p>
+<p>训练命令使用：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BC_CHECKPOINT=prototype/models/bc_unified_tiny_small_successdistill_300e.pt</span><br><span class="line">WARMSTART_TIMESTEPS=20000</span><br><span class="line">OUT_MODEL=prototype/models/maskable_ppo_tiny_small_successdistill_warmstart_20k.zip</span><br></pre></td></tr></table></figure>
+
+<p>训练本身可以完成，日志中也显示：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">entropy_loss: around -2.02 -&gt; -1.53</span><br><span class="line">clip_fraction: non-zero</span><br><span class="line">value_loss: 4.31e+03 -&gt; 1.07e+03</span><br></pre></td></tr></table></figure>
+
+<p>但 deterministic eval 结果严重退化：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">PPO deterministic:</span><br><span class="line">  success_rate      = 0/10</span><br><span class="line">  reached_(4,0)     = false</span><br><span class="line">  chose_e_ftp@(4,0) = false</span><br><span class="line">  avg reward        = -310</span><br><span class="line">  max steps         = 100</span><br></pre></td></tr></table></figure>
+
+<p>典型失败轨迹表现为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">os_scan@(1,0)</span><br><span class="line">e_http@(1,0)</span><br><span class="line">subnet_scan@(1,0)</span><br><span class="line">service_scan@(3,1)</span><br><span class="line">e_ftp@(3,1)</span><br><span class="line">e_http@(3,1)</span><br><span class="line">e_ssh@(2,0)</span><br><span class="line">pe_tomcat@(2,0)</span><br><span class="line">...</span><br><span class="line">service_scan@(3,1) repeated</span><br></pre></td></tr></table></figure>
+
+<p>这说明普通 PPO fine-tune 把 BC actor 中已经学到的成功路径冲坏了。</p>
+<p>因此，本阶段明确得到一个结论：</p>
+<blockquote>
+<p>successdistill BC 已经解决 <code>tiny-small</code>，但普通 PPO actor 更新会破坏它，不能继续使用无约束 PPO warm-start。</p>
+</blockquote>
+<hr>
+<h2 id="七、actor-freeze-value-only-PPO-路线打通"><a href="#七、actor-freeze-value-only-PPO-路线打通" class="headerlink" title="七、actor-freeze &#x2F; value-only PPO 路线打通"></a>七、actor-freeze &#x2F; value-only PPO 路线打通</h2><p>为了解决“PPO 破坏 BC actor”的问题，本阶段新增了 actor-freeze PPO 路线。</p>
+<p>新增脚本：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prototype/rl/train_maskable_ppo_tiny_small_bc_actorfreeze.py</span><br></pre></td></tr></table></figure>
+
+<p>核心思路是：</p>
+<ol>
+<li>加载 successdistill BC checkpoint；</li>
+<li>将 BC actor&#x2F;action 权重迁移到 MaskablePPO；</li>
+<li>冻结 actor &#x2F; policy_net &#x2F; action_net；</li>
+<li>只训练 value branch；</li>
+<li>避免 PPO 在早期直接破坏已成功的 BC policy。</li>
+</ol>
+<p>训练结果显示：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">approx_kl       ≈ 2e-08</span><br><span class="line">clip_fraction   = 0</span><br><span class="line">policy_gradient_loss ≈ 0</span><br><span class="line">value_loss      = 2.68e+03 -&gt; 1.26e+03</span><br><span class="line">ep_rew_mean     = 133</span><br><span class="line">ep_len_mean     = 27</span><br></pre></td></tr></table></figure>
+
+<p>这说明 actor 基本没有被改动，主要是 value branch 在更新。</p>
+<p>中途还遇到一个 SB3 optimizer state 问题：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ValueError: loaded state dict contains a parameter group that doesn&#x27;t match the size of optimizer&#x27;s group</span><br></pre></td></tr></table></figure>
+
+<p>原因是 actor-freeze 训练时 optimizer 只包含 value branch 参数，而 SB3 load 时会重建完整 PPO optimizer，导致 parameter group size mismatch。</p>
+<p>后续修复方式为：</p>
+<ul>
+<li>保存前重建 optimizer，使其覆盖全部 policy 参数；</li>
+<li>eval 加载时加入 fallback，必要时丢弃 <code>policy.optimizer</code> 并恢复 policy 权重。</li>
+</ul>
+<p>修改文件：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">prototype/rl/train_maskable_ppo_tiny_small_bc_actorfreeze.py</span><br><span class="line">prototype/rl/eval_tiny_small_ppo_model.py</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="八、actor-freeze-PPO-在-tiny-small-上达到-10-10，并压到-12-步"><a href="#八、actor-freeze-PPO-在-tiny-small-上达到-10-10，并压到-12-步" class="headerlink" title="八、actor-freeze PPO 在 tiny-small 上达到 10/10，并压到 12 步"></a>八、actor-freeze PPO 在 <code>tiny-small</code> 上达到 <code>10/10</code>，并压到 12 步</h2><p>使用 actor-freeze PPO 模型：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/maskable_ppo_tiny_small_successdistill_actorfreeze_20k.zip</span><br></pre></td></tr></table></figure>
+
+<p>deterministic eval 结果为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Aggregate:</span><br><span class="line">  episodes          : 10</span><br><span class="line">  success_rate      : 10/10 = 100.0%</span><br><span class="line">  avg_reward        : +192.000</span><br><span class="line">  avg_steps         : 12.0</span><br><span class="line">  reached_(4,0)     : 10/10</span><br><span class="line">  chose_e_ftp@(4,0) : 10/10</span><br></pre></td></tr></table></figure>
+
+<p>相比 BC baseline：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">BC successdistill:</span><br><span class="line">  success_rate = 10/10</span><br><span class="line">  avg_reward   = +180</span><br><span class="line">  avg_steps    = 16</span><br><span class="line"></span><br><span class="line">actor-freeze PPO:</span><br><span class="line">  success_rate = 10/10</span><br><span class="line">  avg_reward   = +192</span><br><span class="line">  avg_steps    = 12</span><br></pre></td></tr></table></figure>
+
+<p>这说明 actor-freeze &#x2F; value-only PPO 不仅保住了 BC policy，还压出了更短路径。</p>
+<p>典型 12 步轨迹为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">os_scan@(1,0)</span><br><span class="line">e_http@(1,0)</span><br><span class="line">subnet_scan@(1,0)</span><br><span class="line">os_scan@(2,0)</span><br><span class="line">service_scan@(2,0)</span><br><span class="line">e_ssh@(2,0)</span><br><span class="line">pe_tomcat@(2,0)</span><br><span class="line">service_scan@(3,1)</span><br><span class="line">e_ftp@(3,1)</span><br><span class="line">e_http@(3,1)</span><br><span class="line">subnet_scan@(3,1)</span><br><span class="line">e_ftp@(4,0)</span><br></pre></td></tr></table></figure>
+
+<p>stochastic eval 结果为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">success_rate      = 6/10 = 60.0%</span><br><span class="line">avg_reward        = -26.400</span><br><span class="line">avg_steps         = 53.2</span><br><span class="line">reached_(4,0)     = 7/10</span><br><span class="line">chose_e_ftp@(4,0) = 6/10</span><br></pre></td></tr></table></figure>
+
+<p>当前目标是 deterministic solved，因此 stochastic 结果只作为参考。</p>
+<p>本阶段第二个关键结论是：</p>
+<blockquote>
+<p>普通 PPO 会破坏 BC actor，但 actor-freeze &#x2F; value-only PPO 可以把 BC actor 安全封装进 PPO，并进一步压缩成功路径。</p>
+</blockquote>
+<p>建议固化模型：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/maskable_ppo_tiny_small_successdistill_actorfreeze_SOLVED_10of10_12steps.zip</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="九、迁移到-tiny-hard：先做最小-unified-demo-BC"><a href="#九、迁移到-tiny-hard：先做最小-unified-demo-BC" class="headerlink" title="九、迁移到 tiny-hard：先做最小 unified demo + BC"></a>九、迁移到 <code>tiny-hard</code>：先做最小 unified demo + BC</h2><p>在 <code>tiny-small</code> 已经获得两个 solved baseline 后，继续把同样路线迁移到 <code>tiny-hard</code>。</p>
+<p>本阶段没有直接跑 PPO，也没有直接采集 stochastic success，而是先做最小闭环：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">tiny-hard demo JSON</span><br><span class="line">-&gt; unified dataset</span><br><span class="line">-&gt; BC training</span><br><span class="line">-&gt; deterministic BC eval</span><br></pre></td></tr></table></figure>
+
+<p>首先新增 tiny-hard demo：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/demo_tiny_hard_candidate.json</span><br></pre></td></tr></table></figure>
+
+<p>动作路径为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">host1-0:</span><br><span class="line">  ServiceScan</span><br><span class="line">  OSScan</span><br><span class="line">  Exploit_Http</span><br><span class="line">  ProcessScan</span><br><span class="line">  PrivilegeEscalation_Tomcat</span><br><span class="line">  SubnetScan</span><br><span class="line"></span><br><span class="line">host2-0:</span><br><span class="line">  ServiceScan</span><br><span class="line">  OSScan</span><br><span class="line">  Exploit_Ssh</span><br><span class="line">  ProcessScan</span><br><span class="line">  PrivilegeEscalation_Tomcat</span><br><span class="line">  SubnetScan</span><br><span class="line"></span><br><span class="line">host3-0:</span><br><span class="line">  ServiceScan</span><br><span class="line">  OSScan</span><br><span class="line">  Exploit_Ftp</span><br></pre></td></tr></table></figure>
+
+<p>实际构建 dataset 时观察到一个细节：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PrivilegeEscalation_Tomcat@(1,0) failed</span><br></pre></td></tr></table></figure>
+
+<p>但整条 episode 仍然成功完成，最终通过 <code>e_ftp@(3,0)</code> 获得 ROOT。</p>
+<p>构建结果：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/demo_tiny_hard_unified_dataset.npz</span><br><span class="line">prototype/models/demo_tiny_hard_unified_dataset_meta.json</span><br></pre></td></tr></table></figure>
+
+<p>inspect 结果：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">observations shape : (15, 646)</span><br><span class="line">actions shape      : (15,)</span><br><span class="line">total reward       : 182.00</span><br><span class="line">episode_ends       : [14]</span><br><span class="line">num episodes       : 1</span><br><span class="line">obs_dim            : 646</span><br><span class="line">action_dim         : 192</span><br><span class="line">unified            : True</span><br><span class="line">dagger_ready       : True</span><br><span class="line">Sanity checks      : OK</span><br></pre></td></tr></table></figure>
+
+<p>这里曾经因为 <code>--out</code> 参数传了 <code>.npz</code>，builder 又自动追加 <code>.npz</code>，导致文件名变成：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">demo_tiny_hard_unified_dataset.npz.npz</span><br></pre></td></tr></table></figure>
+
+<p>后续已改名整理为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">demo_tiny_hard_unified_dataset.npz</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="十、tiny-hard-BC-训练与-deterministic-eval-成功"><a href="#十、tiny-hard-BC-训练与-deterministic-eval-成功" class="headerlink" title="十、tiny-hard BC 训练与 deterministic eval 成功"></a>十、<code>tiny-hard</code> BC 训练与 deterministic eval 成功</h2><p>使用 tiny-hard unified dataset 训练 BC：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/bc_unified_tiny_hard_candidate_300e.pt</span><br></pre></td></tr></table></figure>
+
+<p>训练结果：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">obs shape    = (15, 646)</span><br><span class="line">actions shape = (15,)</span><br><span class="line">obs_dim      = 646</span><br><span class="line">action_dim   = 192</span><br><span class="line"></span><br><span class="line">epoch=1,   loss=5.207014, acc=0.0000</span><br><span class="line">epoch=80,  loss=0.436775, acc=1.0000</span><br><span class="line">epoch=300, loss=0.001724, acc=1.0000</span><br></pre></td></tr></table></figure>
+
+<p>随后做 deterministic eval，最开始 <code>eval_bc_unified.py</code> 仍然输出 tiny-small 专用字段：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">reached_(4,0)</span><br><span class="line">chose_e_ftp@(4,0)</span><br></pre></td></tr></table></figure>
+
+<p>这对 <code>tiny-hard</code> 没意义，因为 tiny-hard 的目标是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(3,0), e_ftp@(3,0)</span><br></pre></td></tr></table></figure>
+
+<p>因此对 <code>eval_bc_unified.py</code> 做了最小修改：</p>
+<ul>
+<li>当 <code>--scenario</code> 包含 <code>tiny-hard</code> 时，target host 自动设为 <code>(3,0)</code>；</li>
+<li>其他场景仍保留原先 <code>(4,0)</code> 统计；</li>
+<li>不改变模型加载、wrapper 或评估逻辑。</li>
+</ul>
+<p>修改后 tiny-hard BC deterministic eval 结果为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Aggregate:</span><br><span class="line">  episodes              : 10</span><br><span class="line">  success_rate          : 10/10 = 100.0%</span><br><span class="line">  avg_reward            : +182.000</span><br><span class="line">  avg_steps             : 15.0</span><br><span class="line">  reached_(3,0)         : 10/10</span><br><span class="line">  chose_e_ftp@(3,0)     : 10/10</span><br></pre></td></tr></table></figure>
+
+<p>这说明：</p>
+<blockquote>
+<p><code>tiny-hard</code> 也已经通过最小 expert demo + BC 路线得到 deterministic solved baseline。</p>
+</blockquote>
+<p>建议固化模型：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/bc_unified_tiny_hard_SOLVED_10of10_15steps.pt</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="十一、当前模型与数据资产整理"><a href="#十一、当前模型与数据资产整理" class="headerlink" title="十一、当前模型与数据资产整理"></a>十一、当前模型与数据资产整理</h2><p>截至本阶段，关键资产如下。</p>
+<h3 id="1-tiny-small-数据集"><a href="#1-tiny-small-数据集" class="headerlink" title="1. tiny-small 数据集"></a>1. <code>tiny-small</code> 数据集</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/demo_tiny_small_unified_multidemo_dataset.npz</span><br><span class="line">prototype/models/tiny_small_stochastic_success_traces.npz</span><br><span class="line">prototype/models/demo_tiny_small_unified_successdistill_dataset.npz</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-tiny-small-BC-baseline"><a href="#2-tiny-small-BC-baseline" class="headerlink" title="2. tiny-small BC baseline"></a>2. <code>tiny-small</code> BC baseline</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/bc_unified_tiny_small_successdistill_300e.pt</span><br></pre></td></tr></table></figure>
+
+<p>建议固化：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/bc_unified_tiny_small_successdistill_SOLVED_10of10.pt</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">success_rate = 10/10</span><br><span class="line">avg_reward   = +180</span><br><span class="line">avg_steps    = 16</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-tiny-small-actor-freeze-PPO-baseline"><a href="#3-tiny-small-actor-freeze-PPO-baseline" class="headerlink" title="3. tiny-small actor-freeze PPO baseline"></a>3. <code>tiny-small</code> actor-freeze PPO baseline</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/maskable_ppo_tiny_small_successdistill_actorfreeze_20k.zip</span><br></pre></td></tr></table></figure>
+
+<p>建议固化：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/maskable_ppo_tiny_small_successdistill_actorfreeze_SOLVED_10of10_12steps.zip</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">success_rate = 10/10</span><br><span class="line">avg_reward   = +192</span><br><span class="line">avg_steps    = 12</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-tiny-hard-数据集"><a href="#4-tiny-hard-数据集" class="headerlink" title="4. tiny-hard 数据集"></a>4. <code>tiny-hard</code> 数据集</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/demo_tiny_hard_candidate.json</span><br><span class="line">prototype/models/demo_tiny_hard_unified_dataset.npz</span><br><span class="line">prototype/models/demo_tiny_hard_unified_dataset_meta.json</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-tiny-hard-BC-baseline"><a href="#5-tiny-hard-BC-baseline" class="headerlink" title="5. tiny-hard BC baseline"></a>5. <code>tiny-hard</code> BC baseline</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/bc_unified_tiny_hard_candidate_300e.pt</span><br></pre></td></tr></table></figure>
+
+<p>建议固化：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prototype/models/bc_unified_tiny_hard_SOLVED_10of10_15steps.pt</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">success_rate = 10/10</span><br><span class="line">avg_reward   = +182</span><br><span class="line">avg_steps    = 15</span><br><span class="line">reached_(3,0) = 10/10</span><br><span class="line">chose_e_ftp@(3,0) = 10/10</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="十二、当前阶段的关键技术结论"><a href="#十二、当前阶段的关键技术结论" class="headerlink" title="十二、当前阶段的关键技术结论"></a>十二、当前阶段的关键技术结论</h2><h3 id="1-success-distillation-是-tiny-small-的有效解法"><a href="#1-success-distillation-是-tiny-small-的有效解法" class="headerlink" title="1. success distillation 是 tiny-small 的有效解法"></a>1. success distillation 是 <code>tiny-small</code> 的有效解法</h3><p>普通 PPO 继续训练没有把 stochastic success 压成 deterministic success。</p>
+<p>相反，低成本收集真实 stochastic 成功轨迹，再蒸馏进 BC，直接得到 deterministic <code>10/10</code>。</p>
+<p>这说明在当前问题上：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">successful trajectory distillation &gt; blind PPO fine-tuning</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-普通-PPO-会破坏已成功的-BC-actor"><a href="#2-普通-PPO-会破坏已成功的-BC-actor" class="headerlink" title="2. 普通 PPO 会破坏已成功的 BC actor"></a>2. 普通 PPO 会破坏已成功的 BC actor</h3><p>即使 BC deterministic 已经 <code>10/10</code>，普通 PPO warm-start 20k 仍然把策略冲坏到 <code>0/10</code>。</p>
+<p>原因不是 BC 不会，而是 PPO actor update 在当前 reward&#x2F;mask&#x2F;trajectory distribution 下会让策略偏离成功路径。</p>
+<h3 id="3-actor-freeze-value-only-是当前更安全的-PPO-接法"><a href="#3-actor-freeze-value-only-是当前更安全的-PPO-接法" class="headerlink" title="3. actor-freeze &#x2F; value-only 是当前更安全的 PPO 接法"></a>3. actor-freeze &#x2F; value-only 是当前更安全的 PPO 接法</h3><p>actor-freeze PPO 的结果说明：</p>
+<ul>
+<li>actor 保持 BC 成功策略；</li>
+<li>value branch 可以继续学习；</li>
+<li>deterministic 成功率不下降；</li>
+<li>路径还能从 16 步压到 12 步。</li>
+</ul>
+<p>因此后续如果要把 BC 接回 PPO，应优先考虑：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">actor freeze</span><br><span class="line">value-only warmup</span><br><span class="line">KL-to-BC regularization</span><br><span class="line">small learning-rate actor unfreeze</span><br></pre></td></tr></table></figure>
+
+<p>不应继续直接 PPO 更新 actor。</p>
+<h3 id="4-tiny-hard-并不是不可解，只是此前纯-DRL-adaptation-没打出来"><a href="#4-tiny-hard-并不是不可解，只是此前纯-DRL-adaptation-没打出来" class="headerlink" title="4. tiny-hard 并不是不可解，只是此前纯 DRL adaptation 没打出来"></a>4. <code>tiny-hard</code> 并不是不可解，只是此前纯 DRL adaptation 没打出来</h3><p>此前 <code>tiny-hard</code> 在 20k adaptation 下失败，但现在通过最小 expert demo + BC 训练已经 deterministic <code>10/10</code>。</p>
+<p>这说明 <code>tiny-hard</code> 的核心难点并不是环境不可达，而是当前纯 PPO adaptation 在有限步数与有限探索下未能稳定找到正确路径。</p>
+<h3 id="5-当前主线仍应保持-646-192"><a href="#5-当前主线仍应保持-646-192" class="headerlink" title="5. 当前主线仍应保持 646/192"></a>5. 当前主线仍应保持 <code>646/192</code></h3><p>本阶段所有成功结果都建立在：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">obs_dim = 646</span><br><span class="line">action_dim = 192</span><br><span class="line">reference = medium_reference_signatures.json</span><br></pre></td></tr></table></figure>
+
+<p>因此短期内不要切回 <code>1368/420</code>，否则所有 dataset、BC checkpoint、PPO checkpoint 都需要重新对齐。</p>
+<hr>
+<h2 id="十三、当前不应该继续做什么"><a href="#十三、当前不应该继续做什么" class="headerlink" title="十三、当前不应该继续做什么"></a>十三、当前不应该继续做什么</h2><p>当前阶段不建议继续：</p>
+<ol>
+<li>继续普通 PPO warm-start；</li>
+<li>对 <code>tiny-small</code> 继续无约束 50k &#x2F; 100k &#x2F; 200k 训练；</li>
+<li>继续重复采集大量 stochastic traces；</li>
+<li>继续调 root bonus 作为主修复线；</li>
+<li>在 <code>tiny-small</code> 已 solved 后继续微调同一个场景；</li>
+<li>切换到 <code>1368/420</code> v2 主线；</li>
+<li>上 Transformer 或完整 DAgger；</li>
+<li>让 Claude 执行长时间训练或后台轮询。</li>
+</ol>
+<p>尤其要避免再次出现：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">收 10 条成功轨迹 / max 100 episodes / 后台轮询</span><br></pre></td></tr></table></figure>
+
+<p>这种高成本、低可控的任务模式。</p>
+<hr>
+<h2 id="十四、下一阶段建议"><a href="#十四、下一阶段建议" class="headerlink" title="十四、下一阶段建议"></a>十四、下一阶段建议</h2><p>下一阶段应分成两条低风险线。</p>
+<h3 id="1-固化-solved-baselines"><a href="#1-固化-solved-baselines" class="headerlink" title="1. 固化 solved baselines"></a>1. 固化 solved baselines</h3><p>先把当前已经成功的模型复制成明确命名：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cp</span> prototype/models/bc_unified_tiny_small_successdistill_300e.pt \</span><br><span class="line">   prototype/models/bc_unified_tiny_small_successdistill_SOLVED_10of10.pt</span><br><span class="line"></span><br><span class="line"><span class="built_in">cp</span> prototype/models/maskable_ppo_tiny_small_successdistill_actorfreeze_20k.zip \</span><br><span class="line">   prototype/models/maskable_ppo_tiny_small_successdistill_actorfreeze_SOLVED_10of10_12steps.zip</span><br><span class="line"></span><br><span class="line"><span class="built_in">cp</span> prototype/models/bc_unified_tiny_hard_candidate_300e.pt \</span><br><span class="line">   prototype/models/bc_unified_tiny_hard_SOLVED_10of10_15steps.pt</span><br></pre></td></tr></table></figure>
+
+<p>这些文件应该作为当前阶段的可复现实验资产保留。</p>
+<h3 id="2-继续推进-tiny-hard-actor-freeze-PPO，但不要普通-PPO"><a href="#2-继续推进-tiny-hard-actor-freeze-PPO，但不要普通-PPO" class="headerlink" title="2. 继续推进 tiny-hard actor-freeze PPO，但不要普通 PPO"></a>2. 继续推进 <code>tiny-hard</code> actor-freeze PPO，但不要普通 PPO</h3><p><code>tiny-hard</code> 现在已经有 BC solved baseline，下一步可以仿照 <code>tiny-small</code>：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tiny-hard BC solved</span><br><span class="line">-&gt; actor-freeze PPO</span><br><span class="line">-&gt; deterministic eval</span><br></pre></td></tr></table></figure>
+
+<p>但必须遵守：</p>
+<ul>
+<li>不直接普通 PPO 更新 actor；</li>
+<li>先 actor-freeze &#x2F; value-only；</li>
+<li>eval 成功后再考虑小步解冻；</li>
+<li>如果 actor-freeze 退化，先查 wrapper 和 freeze，不继续训练。</li>
+</ul>
+<h3 id="3-后续再考虑跨-tiny-family-的策略抽象"><a href="#3-后续再考虑跨-tiny-family-的策略抽象" class="headerlink" title="3. 后续再考虑跨 tiny-family 的策略抽象"></a>3. 后续再考虑跨 tiny-family 的策略抽象</h3><p>当前 <code>tiny-small</code> 与 <code>tiny-hard</code> 都已经能通过 BC solved。后续更有价值的问题不是继续单点调参，而是研究：</p>
+<ul>
+<li>是否能从 <code>tiny-small</code> 的 successdistill 数据迁移到 <code>tiny-hard</code>；</li>
+<li>是否能统一 tiny family 的 demo schema；</li>
+<li>是否能让一个 BC &#x2F; PPO policy 覆盖多个 tiny scenarios；</li>
+<li>是否能结合 LLM 做高层任务分解，而不是底层 step-level override。</li>
+</ul>
+<hr>
+<h2 id="十五、今天最终阶段结论"><a href="#十五、今天最终阶段结论" class="headerlink" title="十五、今天最终阶段结论"></a>十五、今天最终阶段结论</h2><p>本阶段的核心突破是：</p>
+<blockquote>
+<p><code>tiny-small</code> 已经从 stochastic 偶发成功推进到 deterministic solved，并进一步通过 actor-freeze PPO 得到更短路径；<code>tiny-hard</code> 也已经通过最小 unified demo + BC 达到 deterministic solved。</p>
+</blockquote>
+<p>当前最重要的两个结果是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">tiny-small actor-freeze PPO:</span><br><span class="line">  success_rate = 10/10</span><br><span class="line">  avg_reward   = +192</span><br><span class="line">  avg_steps    = 12</span><br><span class="line">  target       = e_ftp@(4,0)</span><br><span class="line"></span><br><span class="line">tiny-hard BC:</span><br><span class="line">  success_rate = 10/10</span><br><span class="line">  avg_reward   = +182</span><br><span class="line">  avg_steps    = 15</span><br><span class="line">  target       = e_ftp@(3,0)</span><br></pre></td></tr></table></figure>
+
+<p>这说明当前 <code>646/192</code> unified cross-family 主线已经不仅能跑通 medium&#x2F;small&#x2F;tiny 的接口，也已经开始能通过 imitation + safe PPO warmup 解决原本纯 PPO adaptation 失败的 tiny-family 难点。</p>
+<p>下一阶段应停止在已 solved 的 <code>tiny-small</code> 上继续消耗训练预算，转而把 actor-freeze PPO 安全迁移到 <code>tiny-hard</code>，并逐步研究 tiny family 内的统一策略与高层规划问题。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://izumifushimi.github.io">izumifushimi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://izumifushimi.github.io/2026/05/08/11/">https://izumifushimi.github.io/2026/05/08/11/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://izumifushimi.github.io" target="_blank">欢迎来到和泉伏见的网络世界！</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/zhezhi.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/05/03/10/" title="大模型下的深度强化学习的多智能体渗透测试(10)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">大模型下的深度强化学习的多智能体渗透测试(10)</div></div><div class="info-2"><div class="info-item-1">PenGym 单智能体 izumi 当日进展报告：BC warm-start 工程闭环打通，tiny-small 根因从数据不足推进到 guard、argmax 与奖励信号问题一、这篇文章要说明什么上一篇记录结束时，项目已经推进到一个比较清楚的位置：  medium family 内部泛化已经成立； small-honeypot 和 tiny 已经可以通过 short adaptation 成功； tiny-small / tiny-hard 仍然失败； 失败并不是开局完全不会，而是前期 foothold 能建立，中期会被坏分支带偏； 旧的 build_demo_dataset.py 仍然是 legacy raw observation &#x2F; raw action id 路线，不能直接用于 unified cross-family 主线。  因此，本阶段的重点从“继续堆 PPO 训练步数”转向：  在当前 646/192 unified cross-family 主线下，构建兼容 unified observation 与 canonical action space 的...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/zhezhi.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">izumifushimi</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">13</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#PenGym-%E5%8D%95%E6%99%BA%E8%83%BD%E4%BD%93-izumi-%E5%BD%93%E6%97%A5%E8%BF%9B%E5%B1%95%E6%8A%A5%E5%91%8A%EF%BC%9Asuccess-distillation-%E5%8E%8B%E5%87%BA-tiny-small-deterministic-%E6%88%90%E5%8A%9F%E7%AD%96%E7%95%A5%EF%BC%8C%E5%B9%B6%E8%BF%81%E7%A7%BB%E5%88%B0-tiny-hard-BC-solved-%E5%9F%BA%E7%BA%BF"><span class="toc-number">1.</span> <span class="toc-text">PenGym 单智能体 izumi 当日进展报告：success distillation 压出 tiny-small deterministic 成功策略，并迁移到 tiny-hard BC solved 基线</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%BF%99%E7%AF%87%E6%96%87%E7%AB%A0%E8%A6%81%E8%AF%B4%E6%98%8E%E4%BB%80%E4%B9%88"><span class="toc-number">1.1.</span> <span class="toc-text">一、这篇文章要说明什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%BB%A7%E7%BB%AD%E6%99%AE%E9%80%9A-PPO%EF%BC%8C%E8%80%8C%E6%98%AF%E8%BD%AC%E5%90%91-success-distillation"><span class="toc-number">1.2.</span> <span class="toc-text">二、为什么不继续普通 PPO，而是转向 success distillation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%BD%8E%E6%88%90%E6%9C%AC%E6%94%B6%E9%9B%86-tiny-small-stochastic-%E6%88%90%E5%8A%9F%E8%BD%A8%E8%BF%B9"><span class="toc-number">1.3.</span> <span class="toc-text">三、低成本收集 tiny-small stochastic 成功轨迹</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%90%88%E5%B9%B6-successdistill-dataset-%E5%B9%B6%E8%AE%AD%E7%BB%83-tiny-small-BC"><span class="toc-number">1.4.</span> <span class="toc-text">四、合并 successdistill dataset 并训练 tiny-small BC</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81tiny-small-successdistill-BC-%E8%BE%BE%E5%88%B0-deterministic-10-10"><span class="toc-number">1.5.</span> <span class="toc-text">五、tiny-small successdistill BC 达到 deterministic 10&#x2F;10</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E6%99%AE%E9%80%9A-PPO-warm-start-%E4%BC%9A%E7%A0%B4%E5%9D%8F-BC-actor"><span class="toc-number">1.6.</span> <span class="toc-text">六、普通 PPO warm-start 会破坏 BC actor</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81actor-freeze-value-only-PPO-%E8%B7%AF%E7%BA%BF%E6%89%93%E9%80%9A"><span class="toc-number">1.7.</span> <span class="toc-text">七、actor-freeze &#x2F; value-only PPO 路线打通</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81actor-freeze-PPO-%E5%9C%A8-tiny-small-%E4%B8%8A%E8%BE%BE%E5%88%B0-10-10%EF%BC%8C%E5%B9%B6%E5%8E%8B%E5%88%B0-12-%E6%AD%A5"><span class="toc-number">1.8.</span> <span class="toc-text">八、actor-freeze PPO 在 tiny-small 上达到 10&#x2F;10，并压到 12 步</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81%E8%BF%81%E7%A7%BB%E5%88%B0-tiny-hard%EF%BC%9A%E5%85%88%E5%81%9A%E6%9C%80%E5%B0%8F-unified-demo-BC"><span class="toc-number">1.9.</span> <span class="toc-text">九、迁移到 tiny-hard：先做最小 unified demo + BC</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E3%80%81tiny-hard-BC-%E8%AE%AD%E7%BB%83%E4%B8%8E-deterministic-eval-%E6%88%90%E5%8A%9F"><span class="toc-number">1.10.</span> <span class="toc-text">十、tiny-hard BC 训练与 deterministic eval 成功</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%80%E3%80%81%E5%BD%93%E5%89%8D%E6%A8%A1%E5%9E%8B%E4%B8%8E%E6%95%B0%E6%8D%AE%E8%B5%84%E4%BA%A7%E6%95%B4%E7%90%86"><span class="toc-number">1.11.</span> <span class="toc-text">十一、当前模型与数据资产整理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-tiny-small-%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-number">1.11.1.</span> <span class="toc-text">1. tiny-small 数据集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-tiny-small-BC-baseline"><span class="toc-number">1.11.2.</span> <span class="toc-text">2. tiny-small BC baseline</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-tiny-small-actor-freeze-PPO-baseline"><span class="toc-number">1.11.3.</span> <span class="toc-text">3. tiny-small actor-freeze PPO baseline</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-tiny-hard-%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-number">1.11.4.</span> <span class="toc-text">4. tiny-hard 数据集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-tiny-hard-BC-baseline"><span class="toc-number">1.11.5.</span> <span class="toc-text">5. tiny-hard BC baseline</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%BA%8C%E3%80%81%E5%BD%93%E5%89%8D%E9%98%B6%E6%AE%B5%E7%9A%84%E5%85%B3%E9%94%AE%E6%8A%80%E6%9C%AF%E7%BB%93%E8%AE%BA"><span class="toc-number">1.12.</span> <span class="toc-text">十二、当前阶段的关键技术结论</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-success-distillation-%E6%98%AF-tiny-small-%E7%9A%84%E6%9C%89%E6%95%88%E8%A7%A3%E6%B3%95"><span class="toc-number">1.12.1.</span> <span class="toc-text">1. success distillation 是 tiny-small 的有效解法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%99%AE%E9%80%9A-PPO-%E4%BC%9A%E7%A0%B4%E5%9D%8F%E5%B7%B2%E6%88%90%E5%8A%9F%E7%9A%84-BC-actor"><span class="toc-number">1.12.2.</span> <span class="toc-text">2. 普通 PPO 会破坏已成功的 BC actor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-actor-freeze-value-only-%E6%98%AF%E5%BD%93%E5%89%8D%E6%9B%B4%E5%AE%89%E5%85%A8%E7%9A%84-PPO-%E6%8E%A5%E6%B3%95"><span class="toc-number">1.12.3.</span> <span class="toc-text">3. actor-freeze &#x2F; value-only 是当前更安全的 PPO 接法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-tiny-hard-%E5%B9%B6%E4%B8%8D%E6%98%AF%E4%B8%8D%E5%8F%AF%E8%A7%A3%EF%BC%8C%E5%8F%AA%E6%98%AF%E6%AD%A4%E5%89%8D%E7%BA%AF-DRL-adaptation-%E6%B2%A1%E6%89%93%E5%87%BA%E6%9D%A5"><span class="toc-number">1.12.4.</span> <span class="toc-text">4. tiny-hard 并不是不可解，只是此前纯 DRL adaptation 没打出来</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E5%BD%93%E5%89%8D%E4%B8%BB%E7%BA%BF%E4%BB%8D%E5%BA%94%E4%BF%9D%E6%8C%81-646-192"><span class="toc-number">1.12.5.</span> <span class="toc-text">5. 当前主线仍应保持 646&#x2F;192</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%89%E3%80%81%E5%BD%93%E5%89%8D%E4%B8%8D%E5%BA%94%E8%AF%A5%E7%BB%A7%E7%BB%AD%E5%81%9A%E4%BB%80%E4%B9%88"><span class="toc-number">1.13.</span> <span class="toc-text">十三、当前不应该继续做什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E5%9B%9B%E3%80%81%E4%B8%8B%E4%B8%80%E9%98%B6%E6%AE%B5%E5%BB%BA%E8%AE%AE"><span class="toc-number">1.14.</span> <span class="toc-text">十四、下一阶段建议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%9B%BA%E5%8C%96-solved-baselines"><span class="toc-number">1.14.1.</span> <span class="toc-text">1. 固化 solved baselines</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%BB%A7%E7%BB%AD%E6%8E%A8%E8%BF%9B-tiny-hard-actor-freeze-PPO%EF%BC%8C%E4%BD%86%E4%B8%8D%E8%A6%81%E6%99%AE%E9%80%9A-PPO"><span class="toc-number">1.14.2.</span> <span class="toc-text">2. 继续推进 tiny-hard actor-freeze PPO，但不要普通 PPO</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%90%8E%E7%BB%AD%E5%86%8D%E8%80%83%E8%99%91%E8%B7%A8-tiny-family-%E7%9A%84%E7%AD%96%E7%95%A5%E6%8A%BD%E8%B1%A1"><span class="toc-number">1.14.3.</span> <span class="toc-text">3. 后续再考虑跨 tiny-family 的策略抽象</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%BA%94%E3%80%81%E4%BB%8A%E5%A4%A9%E6%9C%80%E7%BB%88%E9%98%B6%E6%AE%B5%E7%BB%93%E8%AE%BA"><span class="toc-number">1.15.</span> <span class="toc-text">十五、今天最终阶段结论</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/08/11/" title="大模型下的深度强化学习的多智能体渗透测试(11)">大模型下的深度强化学习的多智能体渗透测试(11)</a><time datetime="2026-05-07T16:00:00.000Z" title="发表于 2026-05-08 00:00:00">2026-05-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/03/10/" title="大模型下的深度强化学习的多智能体渗透测试(10)">大模型下的深度强化学习的多智能体渗透测试(10)</a><time datetime="2026-05-02T16:00:00.000Z" title="发表于 2026-05-03 00:00:00">2026-05-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/10/9/" title="大模型下的深度强化学习的多智能体渗透测试(9)">大模型下的深度强化学习的多智能体渗透测试(9)</a><time datetime="2026-04-09T16:00:00.000Z" title="发表于 2026-04-10 00:00:00">2026-04-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/09/8/" title="大模型下的深度强化学习的多智能体渗透测试(8)">大模型下的深度强化学习的多智能体渗透测试(8)</a><time datetime="2026-04-08T16:00:00.000Z" title="发表于 2026-04-09 00:00:00">2026-04-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/04/06/7/" title="大模型下的深度强化学习的多智能体渗透测试(7)">大模型下的深度强化学习的多智能体渗透测试(7)</a><time datetime="2026-04-05T16:00:00.000Z" title="发表于 2026-04-06 00:00:00">2026-04-06</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By izumifushimi</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/fireworks.min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body></html>
