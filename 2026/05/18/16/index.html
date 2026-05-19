@@ -1,0 +1,658 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>大模型下的深度强化学习的多智能体渗透测试(16) | 欢迎来到和泉伏见的网络世界！</title><meta name="author" content="izumifushimi"><meta name="copyright" content="izumifushimi"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="从 DVWA 真实靶场验证到项目收口：Qwen Commander 多智能体渗透测试系统完成闭环一、这篇文章要说明什么上一篇记录结束时，项目已经从 PenGym &#x2F; NASim 仿真智能体，推进到了真实 Web 靶场方向的多智能体系统骨架阶段。 当时已经完成的是：  PenGym 仿真线已经稳定； tiny &#x2F; small &#x2F; medium family 的 expert 和 route">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大模型下的深度强化学习的多智能体渗透测试(16)">
+<meta property="og:url" content="https://izumifushimi.github.io/2026/05/18/16/index.html">
+<meta property="og:site_name" content="欢迎来到和泉伏见的网络世界！">
+<meta property="og:description" content="从 DVWA 真实靶场验证到项目收口：Qwen Commander 多智能体渗透测试系统完成闭环一、这篇文章要说明什么上一篇记录结束时，项目已经从 PenGym &#x2F; NASim 仿真智能体，推进到了真实 Web 靶场方向的多智能体系统骨架阶段。 当时已经完成的是：  PenGym 仿真线已经稳定； tiny &#x2F; small &#x2F; medium family 的 expert 和 route">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://izumifushimi.github.io/img/zhezhi.jpg">
+<meta property="article:published_time" content="2026-05-17T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-05-19T11:29:34.000Z">
+<meta property="article:author" content="izumifushimi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://izumifushimi.github.io/img/zhezhi.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "大模型下的深度强化学习的多智能体渗透测试(16)",
+  "url": "https://izumifushimi.github.io/2026/05/18/16/",
+  "image": "https://izumifushimi.github.io/img/zhezhi.jpg",
+  "datePublished": "2026-05-17T16:00:00.000Z",
+  "dateModified": "2026-05-19T11:29:34.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "izumifushimi",
+      "url": "https://izumifushimi.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://izumifushimi.github.io/2026/05/18/16/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '大模型下的深度强化学习的多智能体渗透测试(16)',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><style>#nav { z-index: 99 !important; background: transparent !important; } #nav .site-page { color: #333 !important; font-weight: bold !important; text-shadow: 1px 1px 2px #fff !important; } #menus { display: block !important; }</style><video id="background-video" autoplay loop muted playsinline style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-2;"><source src="/img/hui.mp4" type="video/mp4"></video><meta name="generator" content="Hexo 8.1.1"></head><body><div class="post" id="body-wrap"><header class="not-top-img fixed" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">欢迎来到和泉伏见的网络世界！</span></a><a class="nav-page-title" href="/"><span class="site-name">大模型下的深度强化学习的多智能体渗透测试(16)</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">大模型下的深度强化学习的多智能体渗透测试(16)</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-05-17T16:00:00.000Z" title="发表于 2026-05-18 00:00:00">2026-05-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-05-19T11:29:34.000Z" title="更新于 2026-05-19 19:29:34">2026-05-19</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E7%A7%91%E7%A0%94/">科研</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div><article class="container post-content" id="article-container"><h1 id="从-DVWA-真实靶场验证到项目收口：Qwen-Commander-多智能体渗透测试系统完成闭环"><a href="#从-DVWA-真实靶场验证到项目收口：Qwen-Commander-多智能体渗透测试系统完成闭环" class="headerlink" title="从 DVWA 真实靶场验证到项目收口：Qwen Commander 多智能体渗透测试系统完成闭环"></a>从 DVWA 真实靶场验证到项目收口：Qwen Commander 多智能体渗透测试系统完成闭环</h1><h2 id="一、这篇文章要说明什么"><a href="#一、这篇文章要说明什么" class="headerlink" title="一、这篇文章要说明什么"></a>一、这篇文章要说明什么</h2><p>上一篇记录结束时，项目已经从 PenGym &#x2F; NASim 仿真智能体，推进到了真实 Web 靶场方向的多智能体系统骨架阶段。</p>
+<p>当时已经完成的是：</p>
+<ul>
+<li>PenGym 仿真线已经稳定；</li>
+<li><code>tiny / small / medium</code> family 的 expert 和 router 已经形成完整闭环；</li>
+<li>本地 toy target 上完成了 <code>nmap service_scan -&gt; XML -&gt; RealObservationEvent</code>；</li>
+<li>Qwen 的角色被重新定位为 Commander，而不是 step-level action override；</li>
+<li>零信任语义通信和 Web Agent Team 的基础架构已经搭起来。</li>
+</ul>
+<p>但是当时还不能说系统已经真正具备 Web 靶场渗透测试能力。因为那时只完成了 nginx toy target 的安全探测，还没有完成：</p>
+<ul>
+<li>DVWA 登录；</li>
+<li>Web 页面爬取；</li>
+<li>表单解析；</li>
+<li>SQLi &#x2F; XSS 候选识别；</li>
+<li>受控漏洞验证；</li>
+<li>证据加固；</li>
+<li>Qwen Commander 真实动态调度；</li>
+<li>最终报告与 Dashboard。</li>
+</ul>
+<p>本阶段的核心，就是把这一条线补完整。</p>
+<p>这篇记录要说明的就是：</p>
+<blockquote>
+<p>项目已经从“真实 Web 靶场多智能体系统骨架”，推进到“本地授权 DVWA 靶场上的多模块渗透测试闭环”，并完成 Qwen Commander 真实参与、零信任校验、证据复核和 HTML Dashboard 展示。至此，本项目可以作为一个阶段性完整成果收口。</p>
+</blockquote>
+<p>本阶段最终完成的事情可以概括为八点：</p>
+<ol>
+<li>已将 DVWA 作为本地授权 Web 靶场接入系统；</li>
+<li>已完成 DVWA 登录、会话保持和 security level 设置；</li>
+<li>已实现 <code>crawl -&gt; form parse -&gt; candidate classification -&gt; controlled validation</code> 的 Web 渗透测试链路；</li>
+<li>已覆盖 SQLi、Blind SQLi、Reflected XSS、Stored XSS、CSRF 结构分析、File Upload 表单分析六类模块；</li>
+<li>已完成 EvidenceAgent 与 CriticAgent 加固，使 findings 不再只是“看起来像”，而是有结构化证据和复核结论；</li>
+<li>已确认 Qwen Commander 在配置好百炼 API Key 后真实参与调度，不再 fallback 到 template；</li>
+<li>已生成 JSON、Markdown 和本地 HTML Dashboard；</li>
+<li>已清理源码包、生成设计文档包，项目进入最终交付状态。</li>
+</ol>
+<hr>
+<h2 id="二、本阶段与上一篇的关系"><a href="#二、本阶段与上一篇的关系" class="headerlink" title="二、本阶段与上一篇的关系"></a>二、本阶段与上一篇的关系</h2><p>上一篇的核心结论是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Qwen Commander</span><br><span class="line">  -&gt; zero-trust semantic message</span><br><span class="line">  -&gt; Agent Team</span><br><span class="line">  -&gt; scope/safety validation</span><br><span class="line">  -&gt; safe recon</span><br><span class="line">  -&gt; structured observation</span><br><span class="line">  -&gt; report</span><br></pre></td></tr></table></figure>
+
+<p>但上一篇还明确说明：</p>
+<blockquote>
+<p>当前只是 Recon 骨架，不是完整 Web 漏洞验证系统。</p>
+</blockquote>
+<p>本阶段解决的正是这个缺口。</p>
+<p>系统从：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nginx toy target</span><br><span class="line">  -&gt; service scan</span><br><span class="line">  -&gt; report</span><br></pre></td></tr></table></figure>
+
+<p>推进为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">DVWA local target</span><br><span class="line">  -&gt; login</span><br><span class="line">  -&gt; session</span><br><span class="line">  -&gt; crawl</span><br><span class="line">  -&gt; form parse</span><br><span class="line">  -&gt; vuln classify</span><br><span class="line">  -&gt; controlled SQLi / XSS validation</span><br><span class="line">  -&gt; evidence</span><br><span class="line">  -&gt; critic review</span><br><span class="line">  -&gt; JSON / Markdown / HTML report</span><br></pre></td></tr></table></figure>
+
+<p>也就是说，本阶段不再只是“能探测一个 Web 服务”，而是开始具备“对一个本地授权 Web 靶场做完整渗透测试流程”的能力。</p>
+<hr>
+<h2 id="三、当前项目最终形成的两条主线"><a href="#三、当前项目最终形成的两条主线" class="headerlink" title="三、当前项目最终形成的两条主线"></a>三、当前项目最终形成的两条主线</h2><p>到本阶段结束，项目已经不能再简单理解成一个 PenGym 训练项目。它已经形成两条主线。</p>
+<h2 id="1-PenGym-NASim-仿真智能体线"><a href="#1-PenGym-NASim-仿真智能体线" class="headerlink" title="1. PenGym &#x2F; NASim 仿真智能体线"></a>1. PenGym &#x2F; NASim 仿真智能体线</h2><p>这一条线是整个项目的原始基础。</p>
+<p>当前最终状态是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">scenario</span><br><span class="line">  -&gt; fingerprint router</span><br><span class="line">  -&gt; selected expert</span><br><span class="line">  -&gt; PPO / BC expert action selection</span><br><span class="line">  -&gt; manager-worker trace analysis</span><br><span class="line">  -&gt; CLI report</span><br></pre></td></tr></table></figure>
+
+<p>代表性结果：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">tiny                 20/20</span><br><span class="line">tiny-small           20/20</span><br><span class="line">tiny-hard            20/20</span><br><span class="line">small-honeypot       20/20</span><br><span class="line">small-linear         20/20</span><br><span class="line">medium               20/20</span><br><span class="line">medium-single-site   20/20</span><br><span class="line">medium-multi-site    20/20</span><br><span class="line">TOTAL                160/160</span><br></pre></td></tr></table></figure>
+
+<p>这说明仿真侧已经具备稳定 benchmark 能力。</p>
+<p>需要强调的是：</p>
+<blockquote>
+<p>当前没有继续训练 PPO &#x2F; BC &#x2F; D3QN；训练线已经暂停，已有 expert 被作为稳定资产使用。</p>
+</blockquote>
+<h2 id="2-真实-Web-靶场多智能体线"><a href="#2-真实-Web-靶场多智能体线" class="headerlink" title="2. 真实 Web 靶场多智能体线"></a>2. 真实 Web 靶场多智能体线</h2><p>这一条线是本阶段的重点。</p>
+<p>最终结构是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Qwen / Template Commander</span><br><span class="line">  -&gt; zero-trust semantic message</span><br><span class="line">  -&gt; SafetyGuard</span><br><span class="line">  -&gt; Agent Team</span><br><span class="line">  -&gt; controlled tools / HTTP session</span><br><span class="line">  -&gt; EvidenceAgent</span><br><span class="line">  -&gt; CriticAgent</span><br><span class="line">  -&gt; ReporterAgent</span><br><span class="line">  -&gt; Dashboard</span><br></pre></td></tr></table></figure>
+
+<p>目标不再是直接输出 NASim action id，而是围绕真实 Web 靶场执行：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Auth</span><br><span class="line">Crawl</span><br><span class="line">Form parse</span><br><span class="line">Vulnerability classification</span><br><span class="line">Controlled validation</span><br><span class="line">Evidence collection</span><br><span class="line">Critic review</span><br><span class="line">Report generation</span><br></pre></td></tr></table></figure>
+
+<p>这条线目前已经在本地 DVWA 上跑通。</p>
+<hr>
+<h2 id="四、DVWA-靶场为什么是关键一步"><a href="#四、DVWA-靶场为什么是关键一步" class="headerlink" title="四、DVWA 靶场为什么是关键一步"></a>四、DVWA 靶场为什么是关键一步</h2><p>之前使用 nginx toy target，只能验证：</p>
+<ul>
+<li>HTTP 服务能访问；</li>
+<li>nmap 能识别服务；</li>
+<li>XML 能解析成结构化 observation；</li>
+<li>Commander 能调度 ReconAgent；</li>
+<li>SafetyGuard 能限制目标范围。</li>
+</ul>
+<p>但 nginx 本身没有漏洞模块，无法验证真正的 Web 渗透测试流程。</p>
+<p>DVWA 的价值在于它提供了标准的 Web 漏洞训练模块，例如：</p>
+<ul>
+<li>SQL Injection；</li>
+<li>SQL Injection Blind；</li>
+<li>Reflected XSS；</li>
+<li>Stored XSS；</li>
+<li>CSRF；</li>
+<li>File Upload。</li>
+</ul>
+<p>因此，接入 DVWA 后，系统才真正能验证：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">智能体是否能登录靶场</span><br><span class="line">智能体是否能爬取页面</span><br><span class="line">智能体是否能解析表单</span><br><span class="line">智能体是否能识别漏洞候选</span><br><span class="line">智能体是否能执行受控验证</span><br><span class="line">智能体是否能保存证据</span><br><span class="line">智能体是否能生成报告</span><br></pre></td></tr></table></figure>
+
+<p>本阶段使用的目标严格限制为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1:18081</span><br></pre></td></tr></table></figure>
+
+<p>并且仅用于本地授权测试。</p>
+<hr>
+<h2 id="五、Stage-23：DVWA-基础渗透验证"><a href="#五、Stage-23：DVWA-基础渗透验证" class="headerlink" title="五、Stage 23：DVWA 基础渗透验证"></a>五、Stage 23：DVWA 基础渗透验证</h2><p>Stage 23 的目标是让 MAS 系统第一次真正跑 DVWA。</p>
+<p>完成内容包括：</p>
+<ol>
+<li>启动本地 DVWA Docker 靶场；</li>
+<li>访问 <code>http://127.0.0.1:18081</code>；</li>
+<li>使用 <code>admin / password</code> 登录；</li>
+<li>处理 CSRF token；</li>
+<li>保持 <code>requests.Session</code>；</li>
+<li>设置并验证 security level；</li>
+<li>爬取 DVWA 页面；</li>
+<li>解析表单；</li>
+<li>识别 SQLi &#x2F; XSS 候选；</li>
+<li>执行受控 SQLi &#x2F; XSS 验证；</li>
+<li>生成 JSON report。</li>
+</ol>
+<p>Stage 23 的结果为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">DVWA running               yes</span><br><span class="line">Login successful           yes</span><br><span class="line">Security level             low</span><br><span class="line">Crawled pages              21</span><br><span class="line">Forms found                15</span><br><span class="line">SQLi candidate             yes</span><br><span class="line">XSS candidate              yes</span><br><span class="line">SQLi controlled validation confirmed</span><br><span class="line">XSS controlled validation  likely</span><br><span class="line">Findings                   2</span><br><span class="line">Commander                  qwen</span><br></pre></td></tr></table></figure>
+
+<p>这一步说明：</p>
+<blockquote>
+<p>系统不再只是结构骨架，而是已经能在真实本地 DVWA 靶场上完成第一轮 Web 漏洞验证。</p>
+</blockquote>
+<hr>
+<h2 id="六、Stage-24：DVWA-多模块扩展验证"><a href="#六、Stage-24：DVWA-多模块扩展验证" class="headerlink" title="六、Stage 24：DVWA 多模块扩展验证"></a>六、Stage 24：DVWA 多模块扩展验证</h2><p>Stage 24 的目标是扩展覆盖范围，不再只看 SQLi 和 Reflected XSS。</p>
+<p>新增或强化的 Agent 包括：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sqli_blind_agent.py</span><br><span class="line">stored_xss_agent.py</span><br><span class="line">csrf_agent.py</span><br><span class="line">upload_agent.py</span><br></pre></td></tr></table></figure>
+
+<p>同时修改了：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">config.py</span><br><span class="line">safety_guard.py</span><br><span class="line">vuln_classifier.py</span><br><span class="line">dvwa_orchestrator.py</span><br><span class="line">reporter_agent.py</span><br><span class="line">izumi_cli.py</span><br></pre></td></tr></table></figure>
+
+<p>Stage 24 覆盖的 DVWA 模块为：</p>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>结果</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SQLi</td>
+<td>confirmed</td>
+<td>受控验证成立</td>
+</tr>
+<tr>
+<td>Blind SQLi</td>
+<td>confirmed</td>
+<td>true &#x2F; false 差异成立</td>
+</tr>
+<tr>
+<td>Reflected XSS</td>
+<td>likely</td>
+<td>marker 被反射</td>
+</tr>
+<tr>
+<td>Stored XSS</td>
+<td>likely</td>
+<td>marker 存储并再次出现</td>
+</tr>
+<tr>
+<td>CSRF</td>
+<td>likely</td>
+<td>只做结构分析，不改状态</td>
+</tr>
+<tr>
+<td>File Upload</td>
+<td>possible</td>
+<td>只检测上传表单，不上传文件</td>
+</tr>
+</tbody></table>
+<p>这一步的重要意义是：</p>
+<blockquote>
+<p>系统从“能验证两个漏洞”扩展为“能覆盖 DVWA 多个常见 Web 漏洞模块”。</p>
+</blockquote>
+<p>但这一阶段仍然有一个问题：</p>
+<ul>
+<li><code>likely</code> 和 <code>possible</code> 的证据强度还不够；</li>
+<li>XSS &#x2F; CSRF &#x2F; Upload 的证据需要进一步细化；</li>
+<li>报告需要更像真实渗透测试报告。</li>
+</ul>
+<p>这就进入了 Stage 25。</p>
+<hr>
+<h2 id="七、Stage-25：证据加固与报告质量升级"><a href="#七、Stage-25：证据加固与报告质量升级" class="headerlink" title="七、Stage 25：证据加固与报告质量升级"></a>七、Stage 25：证据加固与报告质量升级</h2><p>Stage 25 的目标不是新增漏洞，而是提高证据质量。</p>
+<p>本阶段强化了：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">EvidenceAgent</span><br><span class="line">CriticAgent</span><br><span class="line">XSSAgent</span><br><span class="line">StoredXSSAgent</span><br><span class="line">CSRFAgent</span><br><span class="line">UploadAgent</span><br><span class="line">ReporterAgent</span><br></pre></td></tr></table></figure>
+
+<p>核心改动包括：</p>
+<ol>
+<li><code>EvidenceRecord</code> 增加完整字段；</li>
+<li>对 cookie、session、token、password、API key 做脱敏；</li>
+<li>每个 finding 都必须有 evidence record；</li>
+<li>Reflected XSS 必须看到 harmless marker 原样反射；</li>
+<li>Stored XSS 必须二次 GET 后仍能看到 marker；</li>
+<li>CSRF 不再写成 confirmed，而是做结构性 candidate；</li>
+<li>File Upload 不执行上传，只保留表单 evidence；</li>
+<li>Reporter 同时生成 JSON 和 Markdown 报告。</li>
+</ol>
+<p>Stage 25 后的结果变化为：</p>
+<table>
+<thead>
+<tr>
+<th>Finding</th>
+<th>Stage 24</th>
+<th>Stage 25</th>
+<th>变化</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SQLi</td>
+<td>confirmed</td>
+<td>confirmed</td>
+<td>稳定</td>
+</tr>
+<tr>
+<td>Blind SQLi</td>
+<td>confirmed</td>
+<td>confirmed</td>
+<td>稳定</td>
+</tr>
+<tr>
+<td>Reflected XSS</td>
+<td>likely</td>
+<td>confirmed</td>
+<td>证据增强</td>
+</tr>
+<tr>
+<td>Stored XSS</td>
+<td>likely</td>
+<td>confirmed</td>
+<td>证据增强</td>
+</tr>
+<tr>
+<td>CSRF</td>
+<td>likely</td>
+<td>candidate</td>
+<td>更精确</td>
+</tr>
+<tr>
+<td>File Upload</td>
+<td>possible</td>
+<td>candidate</td>
+<td>更精确</td>
+</tr>
+</tbody></table>
+<p>Stage 25 的输出包括：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./prototype/reports/dvwa_stage25_report.json</span><br><span class="line">./prototype/reports/dvwa_stage25_report.md</span><br></pre></td></tr></table></figure>
+
+<p>这一步使系统从“能发现”进一步变成“能解释为什么发现成立”。</p>
+<hr>
+<h2 id="八、Stage-26：DVWA-medium-security-validation"><a href="#八、Stage-26：DVWA-medium-security-validation" class="headerlink" title="八、Stage 26：DVWA medium security validation"></a>八、Stage 26：DVWA medium security validation</h2><p>Stage 26 的目标是验证系统是否只能打 low，还是能适应 DVWA medium security。</p>
+<p>在 medium 下，部分参数和请求方式发生变化，特别是 SQLi &#x2F; Blind SQLi 模块需要识别表单方法和安全等级差异。</p>
+<p>本阶段主要改动包括：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sqli_agent.py</span><br><span class="line">sqli_blind_agent.py</span><br><span class="line">dvwa_orchestrator.py</span><br></pre></td></tr></table></figure>
+
+<p>关键点：</p>
+<ul>
+<li>SQLi medium 使用 POST；</li>
+<li>使用数字型注入 <code>1 OR 1=1</code>；</li>
+<li>Blind SQLi 使用 <code>1 AND 1=1</code> &#x2F; <code>1 AND 1=2</code>；</li>
+<li>Evidence 中记录真实 HTTP method；</li>
+<li>不使用 sqlmap；</li>
+<li>不做时间盲注；</li>
+<li>不执行破坏性请求。</li>
+</ul>
+<p>Medium 结果为：</p>
+<table>
+<thead>
+<tr>
+<th>Finding</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SQLi</td>
+<td>likely</td>
+</tr>
+<tr>
+<td>Blind SQLi</td>
+<td>confirmed</td>
+</tr>
+<tr>
+<td>Reflected XSS</td>
+<td>confirmed</td>
+</tr>
+<tr>
+<td>Stored XSS</td>
+<td>confirmed</td>
+</tr>
+<tr>
+<td>CSRF</td>
+<td>candidate</td>
+</tr>
+<tr>
+<td>File Upload</td>
+<td>candidate</td>
+</tr>
+</tbody></table>
+<p>这说明：</p>
+<blockquote>
+<p>系统已经不是只对 low security 的固定页面模式生效，而是开始具备一定的安全等级适配能力。</p>
+</blockquote>
+<p>但 medium 下 SQLi 只达到 <code>likely</code>，这也是合理的，因为它基于 differential evidence，而不是 error marker。</p>
+<hr>
+<h2 id="九、Stage-27：Commander-对比框架"><a href="#九、Stage-27：Commander-对比框架" class="headerlink" title="九、Stage 27：Commander 对比框架"></a>九、Stage 27：Commander 对比框架</h2><p>Stage 27 的目标是验证 Qwen 是否真的作为 Commander 工作，而不是只做报告生成器。</p>
+<p>本阶段实现了：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dvwa_commander.py</span><br><span class="line">commander_comparison.py</span><br><span class="line">test_stage27_commander_comparison.py</span><br></pre></td></tr></table></figure>
+
+<p>并修改：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dvwa_orchestrator.py</span><br><span class="line">reporter_agent.py</span><br><span class="line">izumi_cli.py</span><br></pre></td></tr></table></figure>
+
+<p>新增 CLI：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./scripts/izumi mas-compare-commanders</span><br></pre></td></tr></table></figure>
+
+<p>对比对象是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">template Commander</span><br><span class="line">Qwen Commander</span><br></pre></td></tr></table></figure>
+
+<p>对比维度包括：</p>
+<ul>
+<li>Commander decision count；</li>
+<li>Agent call order；</li>
+<li>findings by type；</li>
+<li>evidence count；</li>
+<li>refused actions；</li>
+<li>SafetyGuard decisions；</li>
+<li>divergence points；</li>
+<li>Qwen decision reasons。</li>
+</ul>
+<p>不过第一次 Stage 27 中发现一个关键问题：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Qwen Commander fallback 到 template</span><br></pre></td></tr></table></figure>
+
+<p>原因是当前 shell &#x2F; Claude Code 环境没有拿到 <code>DASHSCOPE_API_KEY</code>，导致 BailianClient 初始化失败。</p>
+<p>因此，Stage 27 只能证明：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Commander comparison 框架可用</span><br><span class="line">template fallback 可用</span><br><span class="line">SafetyGuard 拦截可用</span><br></pre></td></tr></table></figure>
+
+<p>但还不能证明：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Qwen 真实参与 Commander 决策</span><br></pre></td></tr></table></figure>
+
+<p>所以必须补 Stage 27.1。</p>
+<hr>
+<h2 id="十、Stage-27-1：真实-Qwen-Commander-rerun"><a href="#十、Stage-27-1：真实-Qwen-Commander-rerun" class="headerlink" title="十、Stage 27.1：真实 Qwen Commander rerun"></a>十、Stage 27.1：真实 Qwen Commander rerun</h2><p>Stage 27.1 解决的是 Qwen 是否真正参与的问题。</p>
+<p>修复方法是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">重新设置 DASHSCOPE_API_KEY</span><br><span class="line">确保 Claude Code 进程继承环境变量</span><br><span class="line">验证 BailianClient init</span><br><span class="line">验证 Qwen ping</span><br><span class="line">重跑 mas-compare-commanders</span><br></pre></td></tr></table></figure>
+
+<p>最终结果为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">DASHSCOPE_API_KEY set   yes</span><br><span class="line">BailianClient init      OK</span><br><span class="line">Qwen ping               OK</span><br><span class="line">Qwen Commander real     yes</span><br><span class="line">Fallback to template    no</span><br><span class="line">qwen_run_skipped        false</span><br><span class="line">qwen_fallback_reason    &quot;&quot;</span><br></pre></td></tr></table></figure>
+
+<p>Qwen Commander 产生了 6 个真实决策：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SQLi</span><br><span class="line">SQLi_Blind</span><br><span class="line">XSS_Reflected</span><br><span class="line">XSS_Stored</span><br><span class="line">CSRF</span><br><span class="line">File_Upload</span><br></pre></td></tr></table></figure>
+
+<p>每个 decision 都包含 Qwen decision reason，例如：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">candidate classified as SQLi</span><br><span class="line">candidate classified as SQLi_Blind</span><br><span class="line">candidate classified as XSS_Reflected</span><br><span class="line">candidate classified as XSS_Stored</span><br><span class="line">candidate classified as CSRF</span><br><span class="line">candidate classified as File_Upload</span><br></pre></td></tr></table></figure>
+
+<p>最终对比结果为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">template success: True</span><br><span class="line">qwen success:     True</span><br><span class="line">findings match:   True</span><br><span class="line">divergence pts:   0</span><br></pre></td></tr></table></figure>
+
+<p>这说明：</p>
+<blockquote>
+<p>Qwen 已经真实参与 Commander 决策，但在当前 DVWA medium 场景下，它的调度顺序与 template Commander 一致。</p>
+</blockquote>
+<p>这不是坏事。它说明当前任务结构已经足够明确，Qwen 与 template 都选择了同样合理的流程。</p>
+<p>但也必须客观承认：</p>
+<blockquote>
+<p>Stage 27.1 证明了 Qwen 真实参与和 SafetyGuard 有效，但还没有证明 Qwen 比 template 更优。</p>
+</blockquote>
+<hr>
+<h2 id="十一、Stage-28：HTML-Dashboard"><a href="#十一、Stage-28：HTML-Dashboard" class="headerlink" title="十一、Stage 28：HTML Dashboard"></a>十一、Stage 28：HTML Dashboard</h2><p>Stage 28 的目标是把 JSON &#x2F; Markdown 报告升级成本地静态 HTML Dashboard。</p>
+<p>新增文件：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">prototype/mas/dvwa/html_reporter.py</span><br><span class="line">prototype/mas/dvwa/test_stage28_html_reporter.py</span><br></pre></td></tr></table></figure>
+
+<p>修改文件：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">prototype/cli/izumi_cli.py</span><br></pre></td></tr></table></figure>
+
+<p>新增 CLI：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./scripts/izumi mas-dashboard \</span><br><span class="line">  --output ./prototype/reports/dvwa_dashboard.html</span><br></pre></td></tr></table></figure>
+
+<p>Dashboard 读取：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dvwa_stage25_report.json</span><br><span class="line">dvwa_stage25_medium_report.json</span><br><span class="line">dvwa_stage27_qwen_real_comparison.json</span><br></pre></td></tr></table></figure>
+
+<p>展示内容包括：</p>
+<ol>
+<li>Target overview；</li>
+<li>Executive summary；</li>
+<li>Findings table；</li>
+<li>Per-finding evidence；</li>
+<li>Qwen Commander trace；</li>
+<li>Template vs Qwen comparison；</li>
+<li>SafetyGuard refused actions；</li>
+<li>Low vs Medium summary；</li>
+<li>Limitations。</li>
+</ol>
+<p>Stage 28 验收结果：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Stage 25 JSON read                 yes</span><br><span class="line">Medium JSON read                   yes</span><br><span class="line">Stage 27.1 Qwen comparison JSON    yes</span><br><span class="line">Findings table rendered            yes</span><br><span class="line">Evidence records rendered          yes</span><br><span class="line">Qwen commander trace rendered      yes</span><br><span class="line">SafetyGuard refused actions        yes</span><br><span class="line">Sensitive redaction complete       yes</span><br><span class="line">External CDN used                  no</span><br><span class="line">New scans/attacks executed         no</span><br><span class="line">Public targets accessed            no</span><br><span class="line">Tests                              16/16 passed</span><br><span class="line">Simulation smoke                   1/1 passed</span><br></pre></td></tr></table></figure>
+
+<p>这一步让项目具备了可演示性：</p>
+<blockquote>
+<p>不只是命令行能跑，而且可以用 Dashboard 展示目标、发现、证据、Qwen 调度和 SafetyGuard 拒绝记录。</p>
+</blockquote>
+<hr>
+<h2 id="十二、系统最终架构"><a href="#十二、系统最终架构" class="headerlink" title="十二、系统最终架构"></a>十二、系统最终架构</h2><p>项目最终结构可以概括为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">PenGym / NASim Simulation Branch</span><br><span class="line">  -&gt; PPO / BC experts</span><br><span class="line">  -&gt; family router</span><br><span class="line">  -&gt; manager-worker</span><br><span class="line">  -&gt; simulation CLI</span><br><span class="line"></span><br><span class="line">DVWA Web MAS Branch</span><br><span class="line">  -&gt; Qwen / Template Commander</span><br><span class="line">  -&gt; zero-trust semantic messages</span><br><span class="line">  -&gt; SafetyGuard</span><br><span class="line">  -&gt; AuthSessionAgent</span><br><span class="line">  -&gt; CrawlAgent</span><br><span class="line">  -&gt; FormParserAgent</span><br><span class="line">  -&gt; VulnClassifierAgent</span><br><span class="line">  -&gt; SQLiAgent</span><br><span class="line">  -&gt; BlindSQLiAgent</span><br><span class="line">  -&gt; XSSAgent</span><br><span class="line">  -&gt; StoredXSSAgent</span><br><span class="line">  -&gt; CSRFAgent</span><br><span class="line">  -&gt; UploadAgent</span><br><span class="line">  -&gt; EvidenceAgent</span><br><span class="line">  -&gt; CriticAgent</span><br><span class="line">  -&gt; ReporterAgent</span><br><span class="line">  -&gt; HTML Dashboard</span><br></pre></td></tr></table></figure>
+
+<p>其中 Qwen 的位置非常明确：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Qwen = Commander</span><br></pre></td></tr></table></figure>
+
+<p>Qwen 不做：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">不直接发 HTTP 请求</span><br><span class="line">不直接构造 payload</span><br><span class="line">不直接调用工具</span><br><span class="line">不绕过 SafetyGuard</span><br><span class="line">不替 PPO expert 做 step-level action</span><br></pre></td></tr></table></figure>
+
+<p>Qwen 做：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">读取结构化状态</span><br><span class="line">选择下一步 Agent</span><br><span class="line">给出调度理由</span><br><span class="line">输出 semantic task</span><br><span class="line">接受 SafetyGuard 校验</span><br></pre></td></tr></table></figure>
+
+<p>这就是本项目中 LLM 的合理位置。</p>
+<hr>
+<h2 id="十三、零信任体系最终落地情况"><a href="#十三、零信任体系最终落地情况" class="headerlink" title="十三、零信任体系最终落地情况"></a>十三、零信任体系最终落地情况</h2><p>本项目最终不是简单“让 LLM 调工具”，而是加入了零信任语义通信。</p>
+<p>核心原则：</p>
+<blockquote>
+<p>任何 Agent 或 Qwen 输出的任务都不能直接执行，必须先通过结构化消息和 SafetyGuard 校验。</p>
+</blockquote>
+<p>SafetyGuard 拒绝项包括：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">公网目标</span><br><span class="line">非 allowlist host / port</span><br><span class="line">hydra</span><br><span class="line">metasploit</span><br><span class="line">sqlmap</span><br><span class="line">webshell</span><br><span class="line">command injection</span><br><span class="line">反连 payload</span><br><span class="line">破坏性请求</span><br><span class="line">logout / setup 等不应访问路径</span><br><span class="line">upload execution</span><br></pre></td></tr></table></figure>
+
+<p>在实际 Stage 27.1 中，SafetyGuard 仍然生效：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">39 refused actions per run</span><br><span class="line">blocked_path: setup.php</span><br><span class="line">blocked_path: logout.php</span><br><span class="line">file_upload_blocked</span><br></pre></td></tr></table></figure>
+
+<p>这说明：</p>
+<blockquote>
+<p>即使 Qwen 真实参与决策，系统仍然没有放弃安全边界。</p>
+</blockquote>
+<hr>
+<h2 id="十四、最终交付物整理"><a href="#十四、最终交付物整理" class="headerlink" title="十四、最终交付物整理"></a>十四、最终交付物整理</h2><p>功能完成后，项目进入交付整理阶段。</p>
+<p>最终源代码包清理原则是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">只保留项目相关代码、训练脚本、配置、场景、模型/数据资产、Docker 靶场配置</span><br><span class="line">删除所有阶段报告、临时总结、Dashboard 产物、运行报告</span><br></pre></td></tr></table></figure>
+
+<p>最终源码包保留的核心目录包括：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">configs/</span><br><span class="line">cyber_range/</span><br><span class="line">database/</span><br><span class="line">figures/</span><br><span class="line">pengym/</span><br><span class="line">prototype/</span><br><span class="line">research_snapshots/</span><br><span class="line">scripts/</span><br><span class="line">tests/</span><br><span class="line">toy_range/</span><br><span class="line">web_range/</span><br><span class="line">run.py</span><br><span class="line">requirements_*.txt</span><br><span class="line">README.md</span><br><span class="line">LICENSE</span><br><span class="line">CHANGES</span><br><span class="line">CONTRIBUTORS</span><br></pre></td></tr></table></figure>
+
+<p>排除内容包括：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">.venv/</span><br><span class="line">.git/</span><br><span class="line">.claude/</span><br><span class="line">__pycache__/</span><br><span class="line">prototype/reports/*</span><br><span class="line">deliverables/</span><br><span class="line">docs/</span><br><span class="line">logs/</span><br><span class="line">阶段报告</span><br><span class="line">summary 文档</span><br><span class="line">dashboard 产物</span><br></pre></td></tr></table></figure>
+
+<p>最终还单独生成了设计文档包，包括：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">system_design.md</span><br><span class="line">agent_architecture.md</span><br><span class="line">zero_trust_semantic_communication.md</span><br><span class="line">dvwa_validation_report.md</span><br><span class="line">deployment_guide.md</span><br><span class="line">user_manual.md</span><br><span class="line">source_code_structure.md</span><br><span class="line">final_project_summary.md</span><br></pre></td></tr></table></figure>
+
+<p>这样最终提交材料被拆成：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">源码包</span><br><span class="line">设计文档包</span><br><span class="line">运行视频</span><br><span class="line">HTML Dashboard 演示文件</span><br></pre></td></tr></table></figure>
+
+<p>而不是把所有内容混在源码目录里。</p>
+<hr>
+<h2 id="十五、系统能做什么，不能做什么"><a href="#十五、系统能做什么，不能做什么" class="headerlink" title="十五、系统能做什么，不能做什么"></a>十五、系统能做什么，不能做什么</h2><h3 id="1-当前已经能做"><a href="#1-当前已经能做" class="headerlink" title="1. 当前已经能做"></a>1. 当前已经能做</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">在 PenGym / NASim 中完成 160/160 仿真 benchmark</span><br><span class="line">在本地 DVWA 中完成登录和会话保持</span><br><span class="line">在本地 DVWA 中爬取页面和表单</span><br><span class="line">识别 SQLi / Blind SQLi / XSS / Stored XSS / CSRF / Upload candidate</span><br><span class="line">执行受控 SQLi / XSS 验证</span><br><span class="line">保存 evidence record</span><br><span class="line">进行 CriticAgent 复核</span><br><span class="line">生成 JSON / Markdown / HTML 报告</span><br><span class="line">让 Qwen 作为 Commander 真实参与调度</span><br><span class="line">使用 SafetyGuard 拒绝越权任务</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-当前明确不能做"><a href="#2-当前明确不能做" class="headerlink" title="2. 当前明确不能做"></a>2. 当前明确不能做</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">不能攻击公网网站</span><br><span class="line">不能声称支持任意真实网站</span><br><span class="line">不能使用 hydra / metasploit / sqlmap</span><br><span class="line">不能爆破</span><br><span class="line">不能上传 webshell</span><br><span class="line">不能执行 command injection</span><br><span class="line">不能执行反连 payload</span><br><span class="line">不能做真实提权</span><br><span class="line">不能把 DVWA 结果等同于真实企业站点能力</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-当前没有继续做的内容"><a href="#3-当前没有继续做的内容" class="headerlink" title="3. 当前没有继续做的内容"></a>3. 当前没有继续做的内容</h3><p>虽然可以继续扩展，但本项目最终选择收口，没有继续做：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Pikachu 接入</span><br><span class="line">DVWA high security bypass</span><br><span class="line">更多漏洞类型</span><br><span class="line">Command Injection</span><br><span class="line">Metasploitable</span><br><span class="line">真实公网目标</span><br><span class="line">长期自主攻击链</span><br></pre></td></tr></table></figure>
+
+<p>原因很简单：</p>
+<blockquote>
+<p>当前项目已经形成完整研究闭环，继续堆功能会降低主线清晰度。</p>
+</blockquote>
+<hr>
+<h2 id="十六、这个项目最终的意义"><a href="#十六、这个项目最终的意义" class="headerlink" title="十六、这个项目最终的意义"></a>十六、这个项目最终的意义</h2><p>这个项目最终不是一个“无约束自动黑客工具”。</p>
+<p>更准确地说，它是一个：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">从 DRL 仿真自动渗透智能体</span><br><span class="line">迁移到本地授权 Web 靶场多智能体渗透测试系统</span><br><span class="line">的研究原型</span><br></pre></td></tr></table></figure>
+
+<p>它的核心贡献可以概括为四点。</p>
+<h3 id="1-仿真侧完成-expert-router-闭环"><a href="#1-仿真侧完成-expert-router-闭环" class="headerlink" title="1. 仿真侧完成 expert-router 闭环"></a>1. 仿真侧完成 expert-router 闭环</h3><p>项目不是停在单一 PPO 模型，而是通过：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">unified observation/action</span><br><span class="line">BC warm-start</span><br><span class="line">success distillation</span><br><span class="line">actor-freeze PPO</span><br><span class="line">family router</span><br></pre></td></tr></table></figure>
+
+<p>逐步解决 tiny &#x2F; small &#x2F; medium family，并形成 160&#x2F;160 的 simulation benchmark。</p>
+<h3 id="2-LLM-位置被重新定义"><a href="#2-LLM-位置被重新定义" class="headerlink" title="2. LLM 位置被重新定义"></a>2. LLM 位置被重新定义</h3><p>项目实际排除了 step-level LLM override 这条路，最终把 Qwen 放在 Commander 层。</p>
+<p>这个结论很关键：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LLM 不适合替代低层高频动作策略</span><br><span class="line">LLM 更适合做高层调度、任务分配、失败解释和报告生成</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-零信任语义通信被落地"><a href="#3-零信任语义通信被落地" class="headerlink" title="3. 零信任语义通信被落地"></a>3. 零信任语义通信被落地</h3><p>项目不是简单让 Qwen 发命令，而是要求所有任务都经过：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">schema validation</span><br><span class="line">scope validation</span><br><span class="line">role validation</span><br><span class="line">safety validation</span><br></pre></td></tr></table></figure>
+
+<p>这使系统具有基本安全边界。</p>
+<h3 id="4-真实-Web-靶场完成本地闭环"><a href="#4-真实-Web-靶场完成本地闭环" class="headerlink" title="4. 真实 Web 靶场完成本地闭环"></a>4. 真实 Web 靶场完成本地闭环</h3><p>项目最终不只是 PenGym 仿真，也不是只扫 nginx，而是在 DVWA 上完成了：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">auth</span><br><span class="line">crawl</span><br><span class="line">classify</span><br><span class="line">controlled validation</span><br><span class="line">evidence</span><br><span class="line">critic</span><br><span class="line">report</span><br><span class="line">dashboard</span><br></pre></td></tr></table></figure>
+
+<p>这说明它已经具备本地授权 Web 靶场测试系统的雏形。</p>
+<hr>
+<h2 id="十七、最终结论：可以收工"><a href="#十七、最终结论：可以收工" class="headerlink" title="十七、最终结论：可以收工"></a>十七、最终结论：可以收工</h2><p>本阶段结束后，项目已经可以收工。</p>
+<p>当前最终判断是：</p>
+<blockquote>
+<p>项目已经完成从 PenGym 仿真 DRL 智能体，到 Qwen Commander + 零信任语义通信 + DVWA 多智能体 Web 渗透验证系统的完整阶段性闭环。</p>
+</blockquote>
+<p>最终状态不是“万能渗透智能体”，而是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">本地授权 Web 靶场多智能体渗透测试研究原型</span><br></pre></td></tr></table></figure>
+
+<p>它已经具备：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">可运行代码</span><br><span class="line">可复现实验命令</span><br><span class="line">本地 DVWA 验证</span><br><span class="line">真实 Qwen Commander</span><br><span class="line">零信任安全边界</span><br><span class="line">证据与复核体系</span><br><span class="line">JSON / Markdown / HTML 报告</span><br><span class="line">设计文档</span><br><span class="line">源码包</span><br><span class="line">演示材料</span><br></pre></td></tr></table></figure>
+
+<p>因此，继续增加新靶场或新漏洞类型已经不是当前最优选择。</p>
+<p>当前最合理的动作是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">清理源码</span><br><span class="line">打包项目</span><br><span class="line">整理设计文档</span><br><span class="line">录制演示视频</span><br><span class="line">提交阶段性成果</span><br></pre></td></tr></table></figure>
+
+<p>到这里，这一轮“深度强化学习 + 大模型 + 多智能体渗透测试”的项目主线可以正式收束。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://izumifushimi.github.io">izumifushimi</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://izumifushimi.github.io/2026/05/18/16/">https://izumifushimi.github.io/2026/05/18/16/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://izumifushimi.github.io" target="_blank">欢迎来到和泉伏见的网络世界！</a>！</span></div></div><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/zhezhi.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/05/17/15/" title="大模型下的深度强化学习的多智能体渗透测试(15)"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">大模型下的深度强化学习的多智能体渗透测试(15)</div></div><div class="info-2"><div class="info-item-1">从 PenGym 仿真到真实 Web 靶场：Qwen Commander、零信任语义通信与多智能体渗透测试系统骨架一、这篇文章要说明什么这篇记录的核心，不再是继续在 PenGym &#x2F; NASim 里训练新的 PPO 模型，也不是继续把已有仿真 expert 的成功率往上堆，而是说明项目开始从“仿真自动渗透智能体”转向“面向本地授权 Web 靶场的多智能体渗透测试系统”。 本阶段最重要的变化可以概括为四点：  训练线已经暂停：当前没有继续训练 PPO、BC、D3QN 或其他 RL 模型，已有模型仍作为仿真 expert 使用。 PenGym 仿真线已经成为稳定基座：tiny / small / medium family 的 solved experts、router、manager-worker、CLI 等工程能力已经形成完整闭环。 真实工具链路已经迈出第一步：本地 Docker toy target 上已经完成 nmap service_scan -&gt; XML -&gt; RealObservationEvent 的受控真实扫描闭环。 大模型角色被重新定义：Qw...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/zhezhi.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">izumifushimi</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">17</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%8E-DVWA-%E7%9C%9F%E5%AE%9E%E9%9D%B6%E5%9C%BA%E9%AA%8C%E8%AF%81%E5%88%B0%E9%A1%B9%E7%9B%AE%E6%94%B6%E5%8F%A3%EF%BC%9AQwen-Commander-%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E7%B3%BB%E7%BB%9F%E5%AE%8C%E6%88%90%E9%97%AD%E7%8E%AF"><span class="toc-number">1.</span> <span class="toc-text">从 DVWA 真实靶场验证到项目收口：Qwen Commander 多智能体渗透测试系统完成闭环</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%BF%99%E7%AF%87%E6%96%87%E7%AB%A0%E8%A6%81%E8%AF%B4%E6%98%8E%E4%BB%80%E4%B9%88"><span class="toc-number">1.1.</span> <span class="toc-text">一、这篇文章要说明什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%9C%AC%E9%98%B6%E6%AE%B5%E4%B8%8E%E4%B8%8A%E4%B8%80%E7%AF%87%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">1.2.</span> <span class="toc-text">二、本阶段与上一篇的关系</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%BD%93%E5%89%8D%E9%A1%B9%E7%9B%AE%E6%9C%80%E7%BB%88%E5%BD%A2%E6%88%90%E7%9A%84%E4%B8%A4%E6%9D%A1%E4%B8%BB%E7%BA%BF"><span class="toc-number">1.3.</span> <span class="toc-text">三、当前项目最终形成的两条主线</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-PenGym-NASim-%E4%BB%BF%E7%9C%9F%E6%99%BA%E8%83%BD%E4%BD%93%E7%BA%BF"><span class="toc-number">1.4.</span> <span class="toc-text">1. PenGym &#x2F; NASim 仿真智能体线</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E7%9C%9F%E5%AE%9E-Web-%E9%9D%B6%E5%9C%BA%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E7%BA%BF"><span class="toc-number">1.5.</span> <span class="toc-text">2. 真实 Web 靶场多智能体线</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81DVWA-%E9%9D%B6%E5%9C%BA%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E5%85%B3%E9%94%AE%E4%B8%80%E6%AD%A5"><span class="toc-number">1.6.</span> <span class="toc-text">四、DVWA 靶场为什么是关键一步</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81Stage-23%EF%BC%9ADVWA-%E5%9F%BA%E7%A1%80%E6%B8%97%E9%80%8F%E9%AA%8C%E8%AF%81"><span class="toc-number">1.7.</span> <span class="toc-text">五、Stage 23：DVWA 基础渗透验证</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81Stage-24%EF%BC%9ADVWA-%E5%A4%9A%E6%A8%A1%E5%9D%97%E6%89%A9%E5%B1%95%E9%AA%8C%E8%AF%81"><span class="toc-number">1.8.</span> <span class="toc-text">六、Stage 24：DVWA 多模块扩展验证</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81Stage-25%EF%BC%9A%E8%AF%81%E6%8D%AE%E5%8A%A0%E5%9B%BA%E4%B8%8E%E6%8A%A5%E5%91%8A%E8%B4%A8%E9%87%8F%E5%8D%87%E7%BA%A7"><span class="toc-number">1.9.</span> <span class="toc-text">七、Stage 25：证据加固与报告质量升级</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81Stage-26%EF%BC%9ADVWA-medium-security-validation"><span class="toc-number">1.10.</span> <span class="toc-text">八、Stage 26：DVWA medium security validation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81Stage-27%EF%BC%9ACommander-%E5%AF%B9%E6%AF%94%E6%A1%86%E6%9E%B6"><span class="toc-number">1.11.</span> <span class="toc-text">九、Stage 27：Commander 对比框架</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E3%80%81Stage-27-1%EF%BC%9A%E7%9C%9F%E5%AE%9E-Qwen-Commander-rerun"><span class="toc-number">1.12.</span> <span class="toc-text">十、Stage 27.1：真实 Qwen Commander rerun</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%80%E3%80%81Stage-28%EF%BC%9AHTML-Dashboard"><span class="toc-number">1.13.</span> <span class="toc-text">十一、Stage 28：HTML Dashboard</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%BA%8C%E3%80%81%E7%B3%BB%E7%BB%9F%E6%9C%80%E7%BB%88%E6%9E%B6%E6%9E%84"><span class="toc-number">1.14.</span> <span class="toc-text">十二、系统最终架构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%89%E3%80%81%E9%9B%B6%E4%BF%A1%E4%BB%BB%E4%BD%93%E7%B3%BB%E6%9C%80%E7%BB%88%E8%90%BD%E5%9C%B0%E6%83%85%E5%86%B5"><span class="toc-number">1.15.</span> <span class="toc-text">十三、零信任体系最终落地情况</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E5%9B%9B%E3%80%81%E6%9C%80%E7%BB%88%E4%BA%A4%E4%BB%98%E7%89%A9%E6%95%B4%E7%90%86"><span class="toc-number">1.16.</span> <span class="toc-text">十四、最终交付物整理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%BA%94%E3%80%81%E7%B3%BB%E7%BB%9F%E8%83%BD%E5%81%9A%E4%BB%80%E4%B9%88%EF%BC%8C%E4%B8%8D%E8%83%BD%E5%81%9A%E4%BB%80%E4%B9%88"><span class="toc-number">1.17.</span> <span class="toc-text">十五、系统能做什么，不能做什么</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%BD%93%E5%89%8D%E5%B7%B2%E7%BB%8F%E8%83%BD%E5%81%9A"><span class="toc-number">1.17.1.</span> <span class="toc-text">1. 当前已经能做</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%BD%93%E5%89%8D%E6%98%8E%E7%A1%AE%E4%B8%8D%E8%83%BD%E5%81%9A"><span class="toc-number">1.17.2.</span> <span class="toc-text">2. 当前明确不能做</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%BD%93%E5%89%8D%E6%B2%A1%E6%9C%89%E7%BB%A7%E7%BB%AD%E5%81%9A%E7%9A%84%E5%86%85%E5%AE%B9"><span class="toc-number">1.17.3.</span> <span class="toc-text">3. 当前没有继续做的内容</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E5%85%AD%E3%80%81%E8%BF%99%E4%B8%AA%E9%A1%B9%E7%9B%AE%E6%9C%80%E7%BB%88%E7%9A%84%E6%84%8F%E4%B9%89"><span class="toc-number">1.18.</span> <span class="toc-text">十六、这个项目最终的意义</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BB%BF%E7%9C%9F%E4%BE%A7%E5%AE%8C%E6%88%90-expert-router-%E9%97%AD%E7%8E%AF"><span class="toc-number">1.18.1.</span> <span class="toc-text">1. 仿真侧完成 expert-router 闭环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-LLM-%E4%BD%8D%E7%BD%AE%E8%A2%AB%E9%87%8D%E6%96%B0%E5%AE%9A%E4%B9%89"><span class="toc-number">1.18.2.</span> <span class="toc-text">2. LLM 位置被重新定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%9B%B6%E4%BF%A1%E4%BB%BB%E8%AF%AD%E4%B9%89%E9%80%9A%E4%BF%A1%E8%A2%AB%E8%90%BD%E5%9C%B0"><span class="toc-number">1.18.3.</span> <span class="toc-text">3. 零信任语义通信被落地</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E7%9C%9F%E5%AE%9E-Web-%E9%9D%B6%E5%9C%BA%E5%AE%8C%E6%88%90%E6%9C%AC%E5%9C%B0%E9%97%AD%E7%8E%AF"><span class="toc-number">1.18.4.</span> <span class="toc-text">4. 真实 Web 靶场完成本地闭环</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%83%E3%80%81%E6%9C%80%E7%BB%88%E7%BB%93%E8%AE%BA%EF%BC%9A%E5%8F%AF%E4%BB%A5%E6%94%B6%E5%B7%A5"><span class="toc-number">1.19.</span> <span class="toc-text">十七、最终结论：可以收工</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/18/16/" title="大模型下的深度强化学习的多智能体渗透测试(16)">大模型下的深度强化学习的多智能体渗透测试(16)</a><time datetime="2026-05-17T16:00:00.000Z" title="发表于 2026-05-18 00:00:00">2026-05-18</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/17/15/" title="大模型下的深度强化学习的多智能体渗透测试(15)">大模型下的深度强化学习的多智能体渗透测试(15)</a><time datetime="2026-05-16T16:00:00.000Z" title="发表于 2026-05-17 00:00:00">2026-05-17</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/13/13/" title="大模型下的深度强化学习的多智能体渗透测试(13)">大模型下的深度强化学习的多智能体渗透测试(13)</a><time datetime="2026-05-12T16:00:00.000Z" title="发表于 2026-05-13 00:00:00">2026-05-13</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/12/12/" title="大模型下的深度强化学习的多智能体渗透测试(12)">大模型下的深度强化学习的多智能体渗透测试(12)</a><time datetime="2026-05-11T16:00:00.000Z" title="发表于 2026-05-12 00:00:00">2026-05-12</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2026/05/08/11/" title="大模型下的深度强化学习的多智能体渗透测试(11)">大模型下的深度强化学习的多智能体渗透测试(11)</a><time datetime="2026-05-07T16:00:00.000Z" title="发表于 2026-05-08 00:00:00">2026-05-08</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By izumifushimi</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.4</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/fireworks.min.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body></html>
